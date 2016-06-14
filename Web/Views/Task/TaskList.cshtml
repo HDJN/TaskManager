@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "TaskList";
+} 
+<html>
+<head>
+    <script src="~/Scripts/jquery-1.12.3.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet" />
+
+    
+    <script src="~/Scripts/common.js"></script>
+    
+</head>
+<body>
+
+    <h2>任务列表</h2>
+
+    <a class="btn btn-default" href='javascript:void(0)' onclick="Add()" >添加一个新任务</a>
+    <hr />
+    <table id="tasklist" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>标识</th>
+                <th>名称</th>
+                <th>执行路径</th>
+                <th>执行参数</th>
+                <th>间隔(分钟)</th>
+                <th>状态</th>
+                <th>最后一次执行时间</th>
+                <th>最后一次执行结果</th>
+                <th>下次执行时间</th>
+                <th>所属人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+    </table>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">任务编辑</h4>
+                </div>
+                <div class="modal-body" style="overflow-y:auto;height:700px;">
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    <script>
+
+        $(document).ready(function () {
+
+            $('#tasklist').DataTable({
+                "ajax":{
+                    "url":'@Url.Action("TaskList")',
+                    "type": "POST",
+                    "data":{"Status":-1},
+                    "dataSrc": "DataList"
+                },
+
+                "columns": [
+                    { "data": "Guid" },
+                    { "data": "Title" },
+                    { "data": "ExecUrl" },
+                    { "data": "ExecParams" },
+                    { "data": "Interval" },
+                    {
+                        "data": "Status",
+                        render: function (data) {
+                            return data==1?"有效":"无效";
+                        }
+                    },
+                    { "data": "LastExecTime", render: tableDate },
+                    {
+                        "data": "LastExecResultCode",
+                        render: function (data) {
+                            if (data == 0)
+                                return "成功";
+                            else if (data == -1000)
+                                return "";
+
+                            return data;
+                        }
+                    },
+                    { "data": "NextExecTime", render: tableDate },
+                    { "data": "CreateUser"},
+                    {
+                        "data": "Guid", "render": function (data, type, row, meta) {
+                            var optionHtml = "";
+                            optionHtml += "<a href='javascript:void(0)' onclick='Edit(\""+data+"\")'>编辑</a> <br/>";
+                            optionHtml += "<a href='TaskLogs?TaskGuid=" + data + "'>执行记录</a>";
+                            return optionHtml;
+                        },
+                    },
+                ]
+
+            });
+
+
+
+        });
+
+        function OpenDialog(url,callback) {
+            $("#myModal").modal('show');
+            $("#myModal  .modal-body").empty();
+            $.get(url, function (data) {
+                
+                $("#myModal  .modal-body").html(data);
+              
+                onSuccess = function () {
+                    if (callback)
+                        callback(); 
+                    $("#myModal").modal('hide');
+                    };
+            });
+            //if(callback&&callback.close)
+            //    $("#myModal < .close").click(callback.close);
+            //if(callback&&callback.save)
+            //$("#myModal < .save").click(callback.save);
+        }
+        function Edit(taskGuid) {
+            
+            OpenDialog('@Url.Action("TaskEdit")' + '?TaskGuid=' + taskGuid, function () {
+                window.location.href = window.location.href;
+                alert("成功");
+            });
+        }
+        function Add() {
+
+            OpenDialog('@Url.Action("TaskAdd")', function () {
+                window.location.href = window.location.href;
+                alert("成功");
+            });
+        }
+    </script>
+</body>
+</html>
