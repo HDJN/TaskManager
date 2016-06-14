@@ -28,6 +28,7 @@
                 <th>标识</th>
                 <th>名称</th>
                 <th>执行路径</th>
+                <th>执行类型</th>
                 <th>执行参数</th>
                 <th>间隔(分钟)</th>
                 <th>状态</th>
@@ -70,6 +71,19 @@
                     { "data": "Guid" },
                     { "data": "Title" },
                     { "data": "ExecUrl" },
+                    {
+                        "data": "ExecType", render: function (data) {
+                            switch (data) {
+                                case 1:
+                                    return "HTTP";
+                                case 2:
+                                    return "EXE";
+                                default:
+                                    return "";
+
+                            }
+                        }
+                    },
                     { "data": "ExecParams" },
                     { "data": "Interval" },
                     {
@@ -95,7 +109,8 @@
                     {
                         "data": "Guid", "render": function (data, type, row, meta) {
                             var optionHtml = "";
-                            optionHtml += "<a href='javascript:void(0)' onclick='Edit(\""+data+"\")'>编辑</a> <br/>";
+                            optionHtml += "<a href='javascript:void(0)' onclick='Edit(\"" + data + "\")'>编辑</a> <br/>";
+                            optionHtml += "<a href='javascript:void(0)' onclick='Run(\"" + data + "\")'>立即执行</a> <br/>";
                             optionHtml += "<a href='TaskLogs?TaskGuid=" + data + "'>执行记录</a>";
                             return optionHtml;
                         },
@@ -112,12 +127,12 @@
             $("#myModal").modal('show');
             $("#myModal  .modal-body").empty();
             $.get(url, function (data) {
-                
+
                 $("#myModal  .modal-body").html(data);
-              
+
                 onSuccess = function () {
                     if (callback)
-                        callback(); 
+                        callback();
                     $("#myModal").modal('hide');
                     };
             });
@@ -127,7 +142,7 @@
             //$("#myModal < .save").click(callback.save);
         }
         function Edit(taskGuid) {
-            
+
             OpenDialog('@Url.Action("TaskEdit")' + '?TaskGuid=' + taskGuid, function () {
                 window.location.href = window.location.href;
                 alert("成功");
@@ -138,6 +153,26 @@
             OpenDialog('@Url.Action("TaskAdd")', function () {
                 window.location.href = window.location.href;
                 alert("成功");
+            });
+        }
+        function Run(taskGuid) {
+            if (!confirm("确认执行?")) { return false;}
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RunTask")',
+                data: { TaskGuid: taskGuid },
+                dataType: "json",
+                success: function (data) {
+                    if (data.IsSuccess == 1) {
+                        window.location.href = window.location.href;
+
+                    } else {
+                        alert('执行失败');
+                    }
+                },
+                error: function () {
+                    alert('执行失败,系统异常');
+                }
             });
         }
     </script>

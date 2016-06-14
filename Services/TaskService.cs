@@ -10,6 +10,9 @@ using TaskManager.Tasks;
 using TaskManager.Common.Utils;
 using System.Linq.Expressions;
 using TaskManager.Entity.Filter;
+using TaskManager.Common.Mvc;
+using TaskManager.Common.Exceptions;
+
 namespace TaskManager.Services
 {
     public class TaskService:BaseService
@@ -31,13 +34,15 @@ namespace TaskManager.Services
             return _ormTasks.Find(w => w.Guid == TaskGuid);
         }
         public bool SaveTask(Ts_Tasks tasks) {
+            if (tasks.ExecType == (int)ExecTypeEnum.EXE)
+                tasks.IsResponseNorm = false;
             if (string.IsNullOrEmpty(tasks.Guid)){
+                tasks.CreateUser = MyContext.CurrentUser.UserId;
                 tasks.Guid = Guid.NewGuid().ToString();
                 tasks.InsertTime = DateTime.Now;
-                bool result= _ormTasks.Add(tasks) > 0;
-                if (result)
+                _ormTasks.Add(tasks);
                     _ormTaskExec.Add(new Ts_TaskExec() { TaskGuid = tasks.Guid });
-                return result;
+                return true;
             }
             return _ormTasks.Update(tasks) > 0;
         }
@@ -50,8 +55,18 @@ namespace TaskManager.Services
         public List<ModelTaskList> GetTaskList(int Status)
         {
             var list = GetAllTask(Status);
-          
+            if (MyContext.Identity != "admin") {
+                list.RemoveAll(x => x.CreateUser != MyContext.CurrentUser.UserId);
+            }
             return list.Select<Ts_Tasks, ModelTaskList>((task, model) => new ModelTaskList(task,_ormTaskExec.Find(w=>w.TaskGuid==task.Guid))).ToList();
+        }
+        public bool RunTask(string TaskGuid) {
+            var task = _ormTasks.Find(w => w.Guid == TaskGuid);
+            if (task == null)
+                throw new BOException("找不到任务ID");
+            var taskinfo = new ExecTaskInfo(task, GetTaskExecByGuid(task.Guid));
+            TasksManage.GetInstance().RunTask(taskinfo,ExecEndMethod);
+            return true;
         }
         public Ts_TaskExec GetTaskExecByGuid(string TaskGuid) {
             return _ormTaskExec.Find(w => w.TaskGuid == TaskGuid);
@@ -70,6 +85,34 @@ namespace TaskManager.Services
         {
             return _ormTasks.FindAll(w => w.Status == 1);
         }
+        private void ExecEndMethod(ExecTaskInfo task,TaskExecResult result) {
+            if (result.Code != 0 && task.IsErrorAlert)
+            {
+                _mailService.SendEmail(string.Format("任务【{0}】执行异常", task.Title),
+                    string.Format("您的任务:{0}\r\n执行异常:\r\n{1}", task.Title, result.Data),
+                    task.ReceiveEmail);
+            }
+
+            Ts_ExecLog tsLog = new Ts_ExecLog();
+            tsLog.ExecEndTime = task.ExecEndTime;
+            tsLog.ExecParams = task.Params;
+            result.Data = result.Data?? string.Empty;
+            tsLog.ExecResult = task.IsResponseNorm?result.ToJson():result.Data.ToString();
+            tsLog.ExecResultCode = result.Code;
+            tsLog.ExecStatrtTime = task.LastExecTime;
+            tsLog.ExecUrl = task.ExecUrl;
+            tsLog.TaskGuid = task.Guid;
+
+            long logId = _ormExecLog.Add(tsLog);
+
+            Ts_TaskExec taskExec = new Ts_TaskExec();
+            taskExec.LastExecId = (int)logId;
+            taskExec.LastExecResultCode = result.Code;
+            taskExec.LastExecTime = task.LastExecTime;
+            taskExec.TaskGuid = task.Guid;
+
+            _ormTaskExec.Update(taskExec);
+        }
         public void StartUp() {
            var listTask= GetNormTask();
             foreach (var task in listTask)
@@ -77,35 +120,7 @@ namespace TaskManager.Services
                 TasksManage.GetInstance().SetTask(new ExecTaskInfo(task,GetTaskExecByGuid(task.Guid)));
             }
 
-            TasksManage.GetInstance().StartUp((task,result)=> {
-
-                if (result.Code != 0 && task.IsErrorAlert) {
-                    _mailService.SendEmail(string.Format("任务【{0}】执行异常", task.Title), 
-                        string.Format("您的任务:{0}\r\n执行异常:\r\n{1}", task.Title, result.Data),
-                        task.ReceiveEmail);
-                }
-               
-                Ts_ExecLog tsLog = new Ts_ExecLog();
-                tsLog.ExecEndTime = task.ExecEndTime;
-                tsLog.ExecParams = task.Params;
-                tsLog.ExecResult = result.ToJson();
-                tsLog.ExecResultCode = result.Code;
-                tsLog.ExecStatrtTime = task.LastExecTime;
-                tsLog.ExecUrl = task.ExecUrl;
-                tsLog.TaskGuid = task.Guid;
-
-               long logId= _ormExecLog.Add(tsLog);
-
-                Ts_TaskExec taskExec = new Ts_TaskExec();
-                taskExec.LastExecId = (int)logId;
-                taskExec.LastExecResultCode = result.Code;
-                taskExec.LastExecTime = task.LastExecTime;
-                taskExec.TaskGuid = task.Guid;
-
-                _ormTaskExec.Update(taskExec);
-
-
-            });
+            TasksManage.GetInstance().StartUp(ExecEndMethod);
         }
        
         public void RestAll() {

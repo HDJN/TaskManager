@@ -7,6 +7,7 @@ using TaskManager.Services;
 using TaskManager.Entity;
 using TaskManager.Entity.Filter;
 using TaskManager.Common.Mvc;
+using TaskManager.Common.Exceptions;
 
 namespace TaskManager.Web.Controllers
 {
@@ -76,7 +77,27 @@ namespace TaskManager.Web.Controllers
         [HttpPost]
         public ActionResult SaveTask(Ts_Tasks tasks) {
             JsonReturnMessages msg = new JsonReturnMessages();
-           msg.IsSuccess= _taskService.SaveTask(tasks);
+            try
+            {
+                msg.IsSuccess = _taskService.SaveTask(tasks);
+                _taskService.RestTask(tasks);
+            }
+            catch (BOException ex) {
+                msg.Msg = ex.Message;
+            }
+            return Json(msg);
+        }
+        [HttpPost]
+        public ActionResult RunTask(string TaskGuid)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                msg.IsSuccess = _taskService.RunTask(TaskGuid);
+            }
+            catch (Exception ex) {
+                msg.Msg = ex.Message;
+            }
             return Json(msg);
         }
     }

@@ -60,31 +60,11 @@
                 @Html.TextBoxFor(m => m.ExecParams, new { Class = "form-control" })
         </div>
         </div>
-        <div id="divHttp">
         <div class="form-group">
             <label for="inputPassword" class="col-sm-2 control-label">超时时间</label>
             <div class="col-sm-9">
                 @Html.TextBoxFor(m => m.TimeOut, new { Class = "form-control" })
                 <p class="text-primary">单位秒</p>
-</div>
-        </div>
-        <div class="form-group">
-            <label for="inputPassword" class="col-sm-2 control-label">HTTP请求类型</label>
-            <div class="col-sm-9">
-                @Html.DropDownListFor(m => m.ExecMethod, (List<SelectListItem>)ViewBag.ExecMethodList, new { Class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="inputPassword" class="col-sm-2 control-label">编码</label>
-            <div class="col-sm-9">
-                @Html.TextBoxFor(m => m.Encoding, new { Class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="inputPassword" class="col-sm-2 control-label">返回结果是否符合规定</label>
-            <div class="col-sm-9">
-                @Html.CheckBoxFor(m => m.IsResponseNorm)
-                <p class="text-primary">返回为JSON格式字符串 {"Code":0,"Msg":"ok","Data":null}&nbsp;&nbsp;&nbsp;Code=0时为执行成功</p>
             </div>
         </div>
         <div class="form-group">
@@ -93,13 +73,34 @@
                 @Html.CheckBoxFor(m => m.IsLogResult)
             </div>
         </div>
+        <div id="divHttp">
+            <div class="form-group">
+                <label for="inputPassword" class="col-sm-2 control-label">HTTP请求类型</label>
+                <div class="col-sm-9">
+                    @Html.DropDownListFor(m => m.ExecMethod, (List<SelectListItem>)ViewBag.ExecMethodList, new { Class = "form-control" })
+                </div>
             </div>
+            <div class="form-group">
+                <label for="inputPassword" class="col-sm-2 control-label">编码</label>
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(m => m.Encoding, new { Class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="col-sm-2 control-label">返回结果是否符合规定</label>
+                <div class="col-sm-9">
+                    @Html.CheckBoxFor(m => m.IsResponseNorm)
+                    <p class="text-primary">返回为JSON格式字符串 {"Code":0,"Msg":"ok","Data":null}&nbsp;&nbsp;&nbsp;Code=0时为执行成功</p>
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label for="inputPassword" class="col-sm-2 control-label">是否异常通知</label>
             <div class="col-sm-9">
                 @Html.CheckBoxFor(m => m.IsErrorAlert)
             </div>
         </div>
+            
         <div class="form-group" id="divMail">
             <label for="inputPassword" class="col-sm-2 control-label">通知收件人</label>
             <div class="col-sm-9">

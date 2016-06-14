@@ -198,7 +198,7 @@ namespace TaskManager.Entity
 		/// 
 		///  varchar(10)
 		/// </summary>
-
+		[Nullable  ] 
 		public string ExecMethod
 		{ get{ return _ExecMethod; } 	set{ _ExecMethod = value ;  OnPropertyChanged("ExecMethod"); } }
 		private int _TimeOut;

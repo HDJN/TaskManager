@@ -35,7 +35,7 @@ namespace TaskManager.Services
                 {
                     //return GetUserInfo(userName);
                     IdentityUser id = new IdentityUser();
-                    id.UserId = u.UserId.ToString();
+                    id.UserId = u.UserId;
                     id.UserName = u.UserName;
 
                     return id;
@@ -64,6 +64,9 @@ namespace TaskManager.Services
         }
         public bool SaveUser(Tu_Users user)
         {
+            if (_ormUsers.Exists(w => w.UserId != user.UserId && w.UserName == user.UserName)) {
+                throw new BOException("账号重复");
+            }
             if (user.UserId==0)
             {
                 user.InsertTime = DateTime.Now;

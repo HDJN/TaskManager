@@ -28,7 +28,8 @@ tr.shown td.details-control {
 <body>
 
     <h2>执行日志</h2>
-
+    <a class="btn btn-default" href='javascript:void(0)' id="btnReload">刷新</a>
+    <hr />
 
     <table id="tasklog" class="table table-striped table-bordered" cellspacing="0" width="100%">
         <thead>
@@ -127,8 +128,12 @@ tr.shown td.details-control {
                     tr.addClass('shown');
                 }
             });
-           
+            $('#btnReload').click(function () {
+                window.location.href = window.location.href;
+            });
+            
         });
+        
  
     </script>
 </body>

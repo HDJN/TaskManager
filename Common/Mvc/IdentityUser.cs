@@ -24,7 +24,7 @@ namespace TaskManager.Common.Mvc
     public class IdentityUser
     {
         public string UserName { get; set; }
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         ///// <summary>
         ///// 所属组织分组Code
