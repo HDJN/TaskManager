@@ -78,6 +78,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="Exceptions\BOException.cs" />
     <Compile Include="Exceptions\NoAuthorizeExecption.cs" />
+    <Compile Include="Mvc\BaseController.cs" />
     <Compile Include="Mvc\IdentityUser.cs" />
     <Compile Include="Mvc\AdminAuthorizeAttribute.cs" />
     <Compile Include="Mvc\MyAuthorizeAttribute.cs" />

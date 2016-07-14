@@ -81,6 +81,51 @@ namespace TaskManager.Entity
 		{ get{ return _ExecParams; } 	set{ _ExecParams = value ;  OnPropertyChanged("ExecParams"); } }
 	}
 
+	[TableName("ts_Servers")]
+	public partial class Ts_Servers : BaseEntity
+	{
+		private int _Id;
+		/// <summary>
+		/// ID
+		///  int(10)
+		/// </summary>
+		[Identity, PrimaryKey(1)] 
+		public int Id
+		{ get{ return _Id; } 	set{ _Id = value ;  OnPropertyChanged("Id"); } }
+		private string _ServerName;
+		/// <summary>
+		/// 
+		///  varchar(50)
+		/// </summary>
+
+		public string ServerName
+		{ get{ return _ServerName; } 	set{ _ServerName = value ;  OnPropertyChanged("ServerName"); } }
+		private DateTime _LastHeartTime;
+		/// <summary>
+		/// 
+		///  datetime(3)
+		/// </summary>
+
+		public DateTime LastHeartTime
+		{ get{ return _LastHeartTime; } 	set{ _LastHeartTime = value ;  OnPropertyChanged("LastHeartTime"); } }
+		private bool _IsEnable;
+		/// <summary>
+		/// 
+		///  bit
+		/// </summary>
+
+		public bool IsEnable
+		{ get{ return _IsEnable; } 	set{ _IsEnable = value ;  OnPropertyChanged("IsEnable"); } }
+		private string _ServerIP;
+		/// <summary>
+		/// 
+		///  varchar(200)
+		/// </summary>
+		[Nullable  ] 
+		public string ServerIP
+		{ get{ return _ServerIP; } 	set{ _ServerIP = value ;  OnPropertyChanged("ServerIP"); } }
+	}
+
 	[TableName("ts_TaskExec")]
 	public partial class Ts_TaskExec : BaseEntity
 	{
@@ -249,6 +294,14 @@ namespace TaskManager.Entity
 		[Nullable  ] 
 		public string ReceiveEmail
 		{ get{ return _ReceiveEmail; } 	set{ _ReceiveEmail = value ;  OnPropertyChanged("ReceiveEmail"); } }
+		private int _RunServerId;
+		/// <summary>
+		/// 
+		///  int(10)
+		/// </summary>
+
+		public int RunServerId
+		{ get{ return _RunServerId; } 	set{ _RunServerId = value ;  OnPropertyChanged("RunServerId"); } }
 	}
 
 	[TableName("tu_Users")]

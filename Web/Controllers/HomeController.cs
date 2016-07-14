@@ -11,7 +11,7 @@ using TaskManager.Common.Exceptions;
 
 namespace Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private SystemService _sysService = new SystemService();
         private TaskService _taskService = new TaskService();

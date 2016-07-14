@@ -34,6 +34,7 @@ namespace TaskManager.Services
             return _ormTasks.Find(w => w.Guid == TaskGuid);
         }
         public bool SaveTask(Ts_Tasks tasks) {
+            tasks.RunServerId = ServerManage.GetInstance().MyServer.Id;
             if (tasks.ExecType == (int)ExecTypeEnum.EXE)
                 tasks.IsResponseNorm = false;
             if (string.IsNullOrEmpty(tasks.Guid)){
@@ -83,7 +84,13 @@ namespace TaskManager.Services
         }
         public List<Ts_Tasks> GetNormTask()
         {
-            return _ormTasks.FindAll(w => w.Status == 1);
+            var myserver = ServerManage.GetInstance().MyServer;
+            if (myserver == null)
+            {
+                log.Fatal(string.Format("服务器没有注册，系统将无法正常运行"));
+                throw new Exception(string.Format("服务器没有注册，系统将无法正常运行"));
+            }
+            return _ormTasks.FindAll(w => w.Status == 1&&w.RunServerId==myserver.Id);
         }
         private void ExecEndMethod(ExecTaskInfo task,TaskExecResult result) {
             if (result.Code != 0 && task.IsErrorAlert)

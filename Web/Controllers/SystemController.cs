@@ -11,7 +11,7 @@ using TaskManager.Common.Mvc;
 namespace TaskManager.Web.Controllers
 {
     [MyAuthorize]
-    public class SystemController:Controller
+    public class SystemController: BaseController
     {
         private SystemService _syskService = new SystemService();
         // GET: Task

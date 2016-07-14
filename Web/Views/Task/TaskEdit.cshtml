@@ -108,6 +108,13 @@
                 <p class="text-primary">多个用;号隔开如  a@qq.com;b@qq.com;c@qq.com</p>
 </div>
         </div>
+        <div class="form-group" id="divMail">
+            <label for="inputPassword" class="col-sm-2 control-label">运行服务器</label>
+            <div class="col-sm-9">
+                @Html.Label("RunServerId", Model.RunServerId.ToString(), new { Class = "form-control" })
+                <p class="text-primary">当前为服务器ID： @ViewBag.CurrentServerId</p>
+            </div>
+        </div>
         <div class="form-group">
             <div class="col-sm-2"></div>
             <div class="col-sm-9">

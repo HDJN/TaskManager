@@ -51,6 +51,7 @@
     <Compile Include="LogService.cs" />
     <Compile Include="MailService.cs" />
     <Compile Include="SystemService.cs" />
+    <Compile Include="ServerService.cs" />
     <Compile Include="TaskService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

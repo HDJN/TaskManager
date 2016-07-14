@@ -150,6 +150,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ServerController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
@@ -206,6 +207,7 @@
     <Content Include="Views\System\UserList.cshtml" />
     <Content Include="Views\System\UserEdit.cshtml" />
     <Content Include="Views\Home\NoRight.cshtml" />
+    <Content Include="Views\Server\ServerList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

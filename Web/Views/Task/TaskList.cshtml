@@ -35,6 +35,7 @@
                 <th>最后一次执行时间</th>
                 <th>最后一次执行结果</th>
                 <th>下次执行时间</th>
+                <th>运行服务器</th>
                 <th>所属人</th>
                 <th>操作</th>
             </tr>
@@ -92,7 +93,14 @@
                             return data==1?"有效":"无效";
                         }
                     },
-                    { "data": "LastExecTime", render: tableDate },
+                    {
+                        "data": "LastExecTime", render: function (data, type, row) {
+                            if (row["IsAbnormal"]) {
+                                return "<span style='color:red'>" + tableDate(data) + "</span>";
+                              return tableDate(data);
+                            }
+                        }
+                    },
                     {
                         "data": "LastExecResultCode",
                         render: function (data) {
@@ -105,7 +113,8 @@
                         }
                     },
                     { "data": "NextExecTime", render: tableDate },
-                    { "data": "CreateUser"},
+                    { "data": "CreateUser" },
+                    { "data": "RunServerId" },
                     {
                         "data": "Guid", "render": function (data, type, row, meta) {
                             var optionHtml = "";

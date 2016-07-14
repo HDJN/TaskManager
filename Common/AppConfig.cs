@@ -15,23 +15,53 @@ namespace TaskManager.Common {
                 return GetConnectionStrings("taskconnection");
             }
         }
-     
+        public static string[] SystemErrorMail
+        {
+            get
+            {
+                var ErrorMail = GetAppSetting("SystemErrorMail");
+                if (ErrorMail != null)
+                    return ErrorMail.Split(';');
+                return null;
+            }
+        }
+        private static readonly object _locktl = new object();
 
 
         public static int TaskInterval
         {
             get
             {
-                string taskIntervalStr= GetAppSetting("TaskInterval");
-                if (string.IsNullOrEmpty(taskIntervalStr)) {
-                    return 1;
+                if (taskInterval == null)
+                {
+                    lock (_locktl) {
+                        if (taskInterval == null)
+                        {
+                            string taskIntervalStr = GetAppSetting("TaskInterval");
+                            if (string.IsNullOrEmpty(taskIntervalStr))
+                            {
+                                return 1;
+                            }
+
+                            int tempTaskInterval = 1;
+                            if (int.TryParse(taskIntervalStr, out tempTaskInterval))
+                                taskInterval = tempTaskInterval;
+                        }
+                    }
+                    
                 }
-                int taskInterval = 1;
-                if (int.TryParse(taskIntervalStr, out taskInterval))
-                    return taskInterval;
-                return 1;
+                return taskInterval.Value;
             }
         }
+        private static int? taskInterval;
+        /// <summary>
+        /// 服务器心跳时隔，分钟
+        /// </summary>
+        public const int ServerHeartInterval = 1;
+        /// <summary>
+        /// 服务器定义为超时时间
+        /// </summary>
+        public const int ServerNoServiceTime = 2;
 
         #region private
         private static string GetAppSetting(string key)

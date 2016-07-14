@@ -24,6 +24,9 @@ namespace TaskManager.Entity
                 return LastExecTime.AddMinutes(Interval);
             }
         }
+        public bool IsAbnormal {
+            get { return NextExecTime < DateTime.Now; }
+        }
         public DateTime LastExecTime { get; set; }
 
         public ModelTaskList(Ts_Tasks tasks)
@@ -43,6 +46,7 @@ namespace TaskManager.Entity
             this.ExecMethod = tasks.ExecMethod;
             this.ExecParams = tasks.ExecParams;
             this.CreateUser = tasks.CreateUser;
+            this.RunServerId = tasks.RunServerId;
         }
         public ModelTaskList(Ts_Tasks tasks, Ts_TaskExec taskExec):this(tasks)
         {

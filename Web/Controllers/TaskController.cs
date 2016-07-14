@@ -8,6 +8,7 @@ using TaskManager.Entity;
 using TaskManager.Entity.Filter;
 using TaskManager.Common.Mvc;
 using TaskManager.Common.Exceptions;
+using TaskManager.Tasks;
 
 namespace TaskManager.Web.Controllers
 {
@@ -64,7 +65,8 @@ namespace TaskManager.Web.Controllers
             }
             ExecMethodList.Add(new SelectListItem() { Value = "", Text = "请选择" });
             ViewBag.ExecMethodList = ExecMethodList;
-            
+            ViewBag.CurrentServerId = ServerManage.GetInstance().MyServer.Id;
+
         }
         public ActionResult TaskAdd()
         {
