@@ -7,15 +7,20 @@ using System.Collections.Generic;
 using System.Threading;
 namespace TaskManager.Tasks
 {
-    public class TasksManage
+    public class TasksManage:IDisposable
     {
-
         private TasksManage()
         {
-
             _listTask = new List<ExecTaskInfo>();
-
         }
+        //private Func<List<ExecTaskInfo>> _queryTaskListAction;
+        //private bool SetQueryTaskListAction(Func<List<ExecTaskInfo>> QueryTaskListAction)
+        //{
+        //    if (_queryTaskListAction == null)
+        //    { _queryTaskListAction = QueryTaskListAction; return true; }
+        //    return false;
+        //}
+        private bool IsRun = false;
         public void SetTask(ExecTaskInfo execTask)
         {
             lock (_locklist)
@@ -36,6 +41,15 @@ namespace TaskManager.Tasks
                         _listTask.Add(execTask);
                 }
 
+            }
+        }
+        public void SetAllTask(List<ExecTaskInfo> execTask)
+        {
+           
+            lock (_locklist)
+            {
+                _listTask.Clear();
+                _listTask.AddRange(execTask.FindAll(x=>x.IsExec));
             }
         }
         public bool RemoveTask(string TaskGuid)
@@ -90,30 +104,41 @@ namespace TaskManager.Tasks
             }
             return _taskManager;
         }
-        public void StartUp(Action<ExecTaskInfo, TaskExecResult> ExecEndAction)
+        Thread mainThread = null;
+        public void StartUp(Action<ExecTaskInfo, TaskExecResult> ExecEndAction, Func<List<ExecTaskInfo>> QueryTaskListAction)
         {
-            Task.Run(() =>
-            {
-                while (true)
-                {
+           // SetQueryTaskListAction(QueryTaskListAction);
+            if (mainThread == null) {
 
-                    List<ExecTaskInfo> tempList;
-                    lock (_locklist)
+                mainThread = new Thread(new ThreadStart(delegate () {
+                    while (IsRun)
                     {
-                        tempList = _listTask.FindAll(x => x.IsExec && x.NextExecTime <= DateTime.Now);
+
+                            List<ExecTaskInfo> tempList = QueryTaskListAction();
+                            //lock (_locklist)
+                            //{
+                            //    tempList = _listTask.FindAll(x => x.IsExec && x.NextExecTime <= DateTime.Now);
+                            //}
+                            if (tempList.Count == 0)
+                            {
+                                Thread.Sleep(1000 * 3);
+                                continue;
+                            }
+                            foreach (var item in tempList)
+                            {
+                                RunTask(item, ExecEndAction);
+                            }
+                       
+                        Thread.Sleep(1000 * 60 * AppConfig.TaskInterval);//休息n分钟后再执行
+                        
                     }
-                    if (tempList.Count == 0)
-                    {
-                        Thread.Sleep(1000 * 3);
-                        continue;
-                    }
-                    foreach (var item in tempList)
-                    {
-                        RunTask(item, ExecEndAction);
-                    }
-                    Thread.Sleep(1000 * 60 * AppConfig.TaskInterval);//休息n分钟后再执行
-                }
-            });
+                }));
+
+                mainThread.IsBackground = false;
+
+            }
+            IsRun = true;
+            mainThread.Start();
         }
 
 
@@ -131,7 +156,7 @@ namespace TaskManager.Tasks
                 string rsp = null;
                 if (taskInfo.ExecType == (int)ExecTypeEnum.HTTP)
                 {
-                    rsp = Net.HttpRequest(taskInfo.ExecUrl, taskInfo.Params, taskInfo.ExecMethod, taskInfo.Timeout, taskInfo.Encoding);
+                    rsp = Net.HttpRequest(taskInfo.ExecUrl, taskInfo.Params, taskInfo.ExecMethod, taskInfo.Timeout, taskInfo.Encoding, taskInfo.IsResponseNorm||taskInfo.IsLogResult);
                     taskInfo.ExecEndTime = DateTime.Now;
 
                     if (rsp.StartsWith(":("))
@@ -168,7 +193,7 @@ namespace TaskManager.Tasks
                 }
                 else if (taskInfo.ExecType == (int)ExecTypeEnum.EXE)
                 {
-                    if (ProcessUtil.StartProcess(taskInfo.ExecUrl, taskInfo.Params, taskInfo.Timeout, ref rsp))
+                    if (ProcessUtil.StartProcess(taskInfo.ExecUrl, taskInfo.Params, taskInfo.Timeout, ref rsp, taskInfo.IsLogResult))
                     {
                         taskInfo.ExecEndTime = DateTime.Now;
                         execResult.Code = 0;
@@ -193,5 +218,15 @@ namespace TaskManager.Tasks
             });
             return taskRun;
         }
+
+        public void Dispose()
+        {
+            IsRun = false;
+            _listTask = null;
+            mainThread = null;
+            _taskManager = null;
+        }
+        
+
     }
 }

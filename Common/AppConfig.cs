@@ -61,7 +61,7 @@ namespace TaskManager.Common {
         /// <summary>
         /// 服务器定义为超时时间
         /// </summary>
-        public const int ServerNoServiceTime = 2;
+        public const int ServerNoServiceTime = 5;
 
         #region private
         private static string GetAppSetting(string key)

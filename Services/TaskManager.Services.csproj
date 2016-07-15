@@ -50,6 +50,7 @@
     <Compile Include="BaseService.cs" />
     <Compile Include="LogService.cs" />
     <Compile Include="MailService.cs" />
+    <Compile Include="Config\ORMConfig.cs" />
     <Compile Include="SystemService.cs" />
     <Compile Include="ServerService.cs" />
     <Compile Include="TaskService.cs" />

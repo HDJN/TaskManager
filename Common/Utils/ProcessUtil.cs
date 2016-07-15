@@ -12,7 +12,8 @@ namespace TaskManager.Common.Utils
 {
     public class ProcessUtil
     {
-        public static bool StartProcess(string FilePath,string Args,int TimeOut,ref string Msg) {
+        public static bool StartProcess(string FilePath, string Args, int TimeOut, ref string Msg, bool IsLogResult)
+        {
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = FilePath;
             info.Arguments = Args;
@@ -21,28 +22,31 @@ namespace TaskManager.Common.Utils
             //info.StandardOutputEncoding = Encoding;
             info.WindowStyle = ProcessWindowStyle.Minimized;
             StreamReader reader = null;
-           
+
             try
             {
                 StringBuilder sb = new StringBuilder();
                 Process pro = Process.Start(info);
-            
-                  
-                    reader =pro.StandardOutput;//截取输出流
-                while (!reader.EndOfStream)
-                { 
-                    sb.AppendLine(reader.ReadLine());
+
+                if (IsLogResult)
+                {
+                    reader = pro.StandardOutput;//截取输出流
+                    while (!reader.EndOfStream)
+                    {
+                        sb.AppendLine(reader.ReadLine());
+                    }
+
                 }
-                    
                 pro.WaitForExit(TimeOut);
                 Msg = sb.ToString();
                 return true;
             }
-            catch (Exception ex) {
-                Msg= ex.Message;
+            catch (Exception ex)
+            {
+                Msg = ex.Message;
                 return false;
             }
         }
- 
+
     }
 }

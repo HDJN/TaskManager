@@ -81,6 +81,75 @@ namespace TaskManager.Entity
 		{ get{ return _ExecParams; } 	set{ _ExecParams = value ;  OnPropertyChanged("ExecParams"); } }
 	}
 
+	[TableName("ts_ExecLog_201607")]
+	public partial class Ts_ExecLog_201607 : BaseEntity
+	{
+		private int _Id;
+		/// <summary>
+		/// 
+		///  int(10)
+		/// </summary>
+		[Identity, PrimaryKey(1)] 
+		public int Id
+		{ get{ return _Id; } 	set{ _Id = value ;  OnPropertyChanged("Id"); } }
+		private string _TaskGuid;
+		/// <summary>
+		/// 
+		///  varchar(36)
+		/// </summary>
+
+		public string TaskGuid
+		{ get{ return _TaskGuid; } 	set{ _TaskGuid = value ;  OnPropertyChanged("TaskGuid"); } }
+		private DateTime _ExecStatrtTime;
+		/// <summary>
+		/// 
+		///  datetime(3)
+		/// </summary>
+
+		public DateTime ExecStatrtTime
+		{ get{ return _ExecStatrtTime; } 	set{ _ExecStatrtTime = value ;  OnPropertyChanged("ExecStatrtTime"); } }
+		private DateTime _ExecEndTime;
+		/// <summary>
+		/// 
+		///  datetime(3)
+		/// </summary>
+
+		public DateTime ExecEndTime
+		{ get{ return _ExecEndTime; } 	set{ _ExecEndTime = value ;  OnPropertyChanged("ExecEndTime"); } }
+		private string _ExecResult;
+		/// <summary>
+		/// 
+		///  varchar(-1)
+		/// </summary>
+
+		public string ExecResult
+		{ get{ return _ExecResult; } 	set{ _ExecResult = value ;  OnPropertyChanged("ExecResult"); } }
+		private int _ExecResultCode;
+		/// <summary>
+		/// 
+		///  int(10)
+		/// </summary>
+
+		public int ExecResultCode
+		{ get{ return _ExecResultCode; } 	set{ _ExecResultCode = value ;  OnPropertyChanged("ExecResultCode"); } }
+		private string _ExecUrl;
+		/// <summary>
+		/// 
+		///  varchar(200)
+		/// </summary>
+
+		public string ExecUrl
+		{ get{ return _ExecUrl; } 	set{ _ExecUrl = value ;  OnPropertyChanged("ExecUrl"); } }
+		private string _ExecParams;
+		/// <summary>
+		/// 
+		///  varchar(200)
+		/// </summary>
+		[Nullable  ] 
+		public string ExecParams
+		{ get{ return _ExecParams; } 	set{ _ExecParams = value ;  OnPropertyChanged("ExecParams"); } }
+	}
+
 	[TableName("ts_Servers")]
 	public partial class Ts_Servers : BaseEntity
 	{
@@ -124,6 +193,14 @@ namespace TaskManager.Entity
 		[Nullable  ] 
 		public string ServerIP
 		{ get{ return _ServerIP; } 	set{ _ServerIP = value ;  OnPropertyChanged("ServerIP"); } }
+		private bool _IsMain;
+		/// <summary>
+		/// 
+		///  bit
+		/// </summary>
+
+		public bool IsMain
+		{ get{ return _IsMain; } 	set{ _IsMain = value ;  OnPropertyChanged("IsMain"); } }
 	}
 
 	[TableName("ts_TaskExec")]

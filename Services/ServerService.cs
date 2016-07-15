@@ -19,16 +19,17 @@ namespace TaskManager.Services
 {
     public class ServerService : BaseService
     {
-        private TaskRepository taskRepository = new TaskRepository();
-    
+        private ServerRepository _serverRepository = new  ServerRepository();
+        private TaskRepository _taskRepository = new TaskRepository();
+
         private IORMRepository<Ts_Servers> _ormServers; 
 
         private MailService _mailService;
         public ServerService() {
-            _ormServers = taskRepository.For<Ts_Servers>(); 
+            _ormServers = _serverRepository.For<Ts_Servers>(); 
             _mailService = new MailService();
         }
-        public bool Heart() {
+        public bool Heart(int ServerId) {
             Ts_Servers Server = new Ts_Servers()
             {
                 LastHeartTime = DateTime.Now,
@@ -36,12 +37,12 @@ namespace TaskManager.Services
             try
             {
 
-               return _ormServers.Update(Server, w => w.Id == ServerManage.GetInstance().MyServer.Id) > 0;
+               return _ormServers.Update(Server, w => w.Id ==ServerId ) > 0;
                 
             }
             catch (Exception ex) {
                
-                log.Fatal(string.Format("Server:{0},服务器心跳异常", ServerManage.GetInstance().MyServer.ServerName),ex);
+                log.Fatal(string.Format("Server:{0},服务器心跳异常", ServersManage.GetInstance().MyServer.ServerName),ex);
                 return false;
             }
         }
@@ -49,7 +50,7 @@ namespace TaskManager.Services
 
         public int Register() {
             
-            if (ServerManage.GetInstance().MyServer != null) {
+            if (ServersManage.GetInstance().MyServer != null) {
                 throw new Exception("已注册过，不能重试注册");
             }
             Ts_Servers Server = new Ts_Servers()
@@ -86,10 +87,12 @@ namespace TaskManager.Services
                     log.Fatal(string.Format("Server:{0},服务器注册失败，系统将无法正常运行", ServerName));
                     throw new Exception(string.Format("Server:{0},服务器注册失败，系统将无法正常运行", ServerName));
                 }
-                ServerManage.GetInstance().MyServer = new Ts_Servers {
+                ServersManage.GetInstance().MyServer = new Ts_Servers {
                  Id= Server.Id,
                     ServerName =ServerName
                 };
+
+                ServersManage.GetInstance().StartUp(Heart, QueryUseServerAction, SetMain);
                 return Server.Id;
             }
             catch (Exception ex)
@@ -97,6 +100,10 @@ namespace TaskManager.Services
                 log.Fatal(string.Format("Server:{0},服务器注册异常，系统将无法正常运行", ServerName), ex);
                 throw new Exception(string.Format("Server:{0},服务器注册异常，系统将无法正常运行", ServerName), ex);
             }
+        }
+        private int QueryUseServerAction() {
+            DateTime outTime = DateTime.Now.AddMinutes(0 - AppConfig.ServerNoServiceTime);
+            return _ormServers.Count(w => w.IsEnable == true && w.LastHeartTime >= outTime);
         }
         public Ts_Servers GetServerId(string ServerName) {
            return _ormServers.Find( w => w.ServerName == ServerName);
@@ -113,6 +120,36 @@ namespace TaskManager.Services
         public bool DisableServer(int Id) {
 
             return _ormServers.Update(new Ts_Servers() { IsEnable = false }, w => w.Id == Id) > 0;
+        }
+        private void SetMain(int myServerId) {
+           
+
+            bool IsGetMainLock = false;
+            try
+            {
+                IsGetMainLock = _serverRepository.GetMainLock(myServerId);
+                AllocationTask();
+            }
+            finally {
+                if (IsGetMainLock)
+                {
+                    _serverRepository.UnMainLock(myServerId);
+                }
+            }
+            
+            
+        }
+        public bool AllocationTask()
+        {
+            var ServerList = GetUseServer();
+            if (ServerList.Count == 0)
+                return false;
+
+            foreach (var server in ServerList)
+            {
+                _taskRepository.AllocationTask(ServerList.Count, server.Id);
+            }
+            return true;
         }
     }
 }

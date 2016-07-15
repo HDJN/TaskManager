@@ -93,14 +93,7 @@
                             return data==1?"有效":"无效";
                         }
                     },
-                    {
-                        "data": "LastExecTime", render: function (data, type, row) {
-                            if (row["IsAbnormal"]) {
-                                return "<span style='color:red'>" + tableDate(data) + "</span>";
-                              return tableDate(data);
-                            }
-                        }
-                    },
+                    {"data": "LastExecTime", render: tableDate },
                     {
                         "data": "LastExecResultCode",
                         render: function (data) {
@@ -112,15 +105,22 @@
                             return data;
                         }
                     },
-                    { "data": "NextExecTime", render: tableDate },
-                    { "data": "CreateUser" },
+                    { "data": "NextExecTime", "render": function (data, type, row) {
+                        if (row["IsAbnormal"]) {
+                            return "<span style='color:red'>" + tableDate(data) + "</span>";
+                        }
+
+                        return tableDate(data);
+                        }
+                    },
                     { "data": "RunServerId" },
+                    { "data": "CreateUserName" },
                     {
                         "data": "Guid", "render": function (data, type, row, meta) {
                             var optionHtml = "";
-                            optionHtml += "<a href='javascript:void(0)' onclick='Edit(\"" + data + "\")'>编辑</a> <br/>";
-                            optionHtml += "<a href='javascript:void(0)' onclick='Run(\"" + data + "\")'>立即执行</a> <br/>";
-                            optionHtml += "<a href='TaskLogs?TaskGuid=" + data + "'>执行记录</a>";
+                            optionHtml += "<a class='btn btn-default btnAdd' href='javascript:void(0)' onclick='Edit(\"" + data + "\")'>编辑</a> <br/>";
+                            optionHtml += "<a class='btn btn-default btnAdd' href='javascript:void(0)' onclick='Run(\"" + data + "\")'>立即执行</a> <br/>";
+                            optionHtml += "<a class='btn btn-default btnAdd' href='TaskLogs?TaskGuid=" + data + "'>执行记录</a>";
                             return optionHtml;
                         },
                     },

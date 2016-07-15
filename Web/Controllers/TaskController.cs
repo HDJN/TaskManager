@@ -65,7 +65,7 @@ namespace TaskManager.Web.Controllers
             }
             ExecMethodList.Add(new SelectListItem() { Value = "", Text = "请选择" });
             ViewBag.ExecMethodList = ExecMethodList;
-            ViewBag.CurrentServerId = ServerManage.GetInstance().MyServer.Id;
+            ViewBag.CurrentServerId = ServersManage.GetInstance().MyServer.Id;
 
         }
         public ActionResult TaskAdd()

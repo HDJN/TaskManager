@@ -9,10 +9,6 @@ namespace TaskManager.Entity
     public class ModelTaskList:Ts_Tasks
     {
 
-        public DateTime LasExecTime
-        {
-            get; set;
-        }
         public int LastExecResultCode
         {
             get; set;
@@ -27,6 +23,7 @@ namespace TaskManager.Entity
         public bool IsAbnormal {
             get { return NextExecTime < DateTime.Now; }
         }
+        public string CreateUserName { get; set; }
         public DateTime LastExecTime { get; set; }
 
         public ModelTaskList(Ts_Tasks tasks)
@@ -56,7 +53,16 @@ namespace TaskManager.Entity
                 this.LastExecResultCode = taskExec.LastExecResultCode??-1000;
             }
         }
-      
+        public ModelTaskList(Ts_Tasks tasks, Ts_TaskExec taskExec,string CreateUserName) : this(tasks)
+        {
+            if (taskExec != null)
+            {
+                this.LastExecTime = taskExec.LastExecTime ?? tasks.InsertTime.AddMinutes(tasks.Interval);
+                this.LastExecResultCode = taskExec.LastExecResultCode ?? -1000;
+            }
+            this.CreateUserName = CreateUserName;
+        }
+
         public ModelTaskList()
         {
         }

@@ -133,3 +133,33 @@ GO
 
 ALTER TABLE [dbo].[ts_Servers] ADD  CONSTRAINT [DF_ts_Servers_IsEnable]  DEFAULT ((1)) FOR [IsEnable]
 GO
+
+
+
+ 
+ 
+declare @TbName varchar (50)
+declare @sql varchar (5000)
+Select @TbName='ts_ExecLog_'+CONVERT(char(6), GETDATE(),112) 	
+IF  not EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(@TbName) AND type in (N'U'))
+begin
+set @sql='
+CREATE TABLE [dbo].'+@TbName+'(
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[TaskGuid] [varchar](36) NOT NULL,
+	[ExecStatrtTime] [datetime] NOT NULL,
+	[ExecEndTime] [datetime] NOT NULL,
+	[ExecResult] [varchar](max) NOT NULL,
+	[ExecResultCode] [int] NOT NULL,
+	[ExecUrl] [varchar](200) NOT NULL,
+	[ExecParams] [varchar](200) NULL,
+ CONSTRAINT [PK_'+@TbName+'] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)
+) ON [PRIMARY]
+'
+
+exec(@sql)
+end
+go

@@ -55,8 +55,11 @@ namespace TaskManager.Services
 
         public Tu_Users GetUserInfo(int UserId)
         {
-
             return _ormUsers.Find(w => w.UserId == UserId);
+        }
+        public string GetUserName(int UserId)
+        {
+            return _ormUsers.Scalar<string>((D,F)=> D(F.UserName),w => w.UserId == UserId);
         }
         public bool DeleteUser(int UserId)
         {

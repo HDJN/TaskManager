@@ -11,7 +11,17 @@ namespace TaskManager.Repositories
     {
         public TaskRepository() : base(AppConfig.Conn_Task)
         {
+            
+        }
 
+        public bool AllocationTask(int serverCount,int runServerId) {
+
+            const string sql = @"update ts_Tasks set RunServerId=@RunServerId from ts_Tasks  where CONVERT(int,CONVERT(varbinary,Right([Guid],1)))%@ServerCount=0";
+            return base.ExecuteCommand(sql, new
+            {
+                ServerCount = serverCount,
+                RunServerId = runServerId
+            }) > 0;
         }
 
     }

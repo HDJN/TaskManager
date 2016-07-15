@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using TaskManager.Services;
+using TaskManager.Services.Config;
 using System.Net;
 namespace Web
 {
@@ -17,8 +18,9 @@ namespace Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            new ServerService().Register();
-            new TaskService().StartUp();
+            ORMConfig.RegisterORM();
+            //new ServerService().Register();
+            //new TaskService().StartUp();
             
         }
     }

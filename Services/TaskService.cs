@@ -18,23 +18,25 @@ namespace TaskManager.Services
     public class TaskService:BaseService
     {
         private TaskRepository taskRepository = new TaskRepository();
-    
+       
         private IORMRepository<Ts_Tasks> _ormTasks;
         private IORMRepository<Ts_ExecLog> _ormExecLog;
         private IORMRepository<Ts_TaskExec> _ormTaskExec;
 
+        private SystemService _systemService;
         private MailService _mailService;
         public TaskService() {
             _ormTasks = taskRepository.For<Ts_Tasks>();
             _ormExecLog = taskRepository.For<Ts_ExecLog>();
             _ormTaskExec = taskRepository.For<Ts_TaskExec>();
             _mailService = new MailService();
+            _systemService = new SystemService();
         }
         public Ts_Tasks GetTaskByGuid(string TaskGuid) {
             return _ormTasks.Find(w => w.Guid == TaskGuid);
         }
         public bool SaveTask(Ts_Tasks tasks) {
-            tasks.RunServerId = ServerManage.GetInstance().MyServer.Id;
+            tasks.RunServerId = ServersManage.GetInstance().MyServer.Id;
             if (tasks.ExecType == (int)ExecTypeEnum.EXE)
                 tasks.IsResponseNorm = false;
             if (string.IsNullOrEmpty(tasks.Guid)){
@@ -53,13 +55,23 @@ namespace TaskManager.Services
              return _ormTasks.FindAll();
             return _ormTasks.FindAll(w => w.Status == Status);
         }
+        public List<Ts_Tasks> GetAllTask(int Status,int CreateUser)
+        {
+            if (Status == -1)
+                return _ormTasks.FindAll(w=> w.CreateUser == CreateUser);
+            return _ormTasks.FindAll(w => w.Status == Status&&w.CreateUser== CreateUser);
+        }
         public List<ModelTaskList> GetTaskList(int Status)
         {
-            var list = GetAllTask(Status);
-            if (MyContext.Identity != "admin") {
-                list.RemoveAll(x => x.CreateUser != MyContext.CurrentUser.UserId);
+            List<Ts_Tasks> list = null;
+            if (MyContext.Identity == "admin")
+            {
+                list = GetAllTask(Status);
             }
-            return list.Select<Ts_Tasks, ModelTaskList>((task, model) => new ModelTaskList(task,_ormTaskExec.Find(w=>w.TaskGuid==task.Guid))).ToList();
+            else {
+                list = GetAllTask(Status,MyContext.CurrentUser.UserId);
+            }
+            return list.Select( task => new ModelTaskList(task,_ormTaskExec.Find(w=>w.TaskGuid==task.Guid), _systemService.GetUserName(task.CreateUser))).ToList();
         }
         public bool RunTask(string TaskGuid) {
             var task = _ormTasks.Find(w => w.Guid == TaskGuid);
@@ -78,13 +90,13 @@ namespace TaskManager.Services
             if (filter.BeginTime.HasValue)
                 where=where.And(w => w.ExecStatrtTime > filter.BeginTime);
             if (filter.EndTime.HasValue)
-                where = where.And(w => w.ExecStatrtTime <= filter.EndTime);
+                where = where.And(w => w.ExecEndTime <= filter.EndTime);
 
             return new PageList<Ts_ExecLog>(_ormExecLog.GetPage(page, where));
         }
         public List<Ts_Tasks> GetNormTask()
         {
-            var myserver = ServerManage.GetInstance().MyServer;
+            var myserver = ServersManage.GetInstance().MyServer;
             if (myserver == null)
             {
                 log.Fatal(string.Format("服务器没有注册，系统将无法正常运行"));
@@ -127,21 +139,28 @@ namespace TaskManager.Services
                 TasksManage.GetInstance().SetTask(new ExecTaskInfo(task,GetTaskExecByGuid(task.Guid)));
             }
 
-            TasksManage.GetInstance().StartUp(ExecEndMethod);
+            TasksManage.GetInstance().StartUp(ExecEndMethod, GetNormExecTaskInfo);
         }
        
         public void RestAll() {
-            TasksManage.GetInstance().RemoveAllTask();
+            //TasksManage.GetInstance().RemoveAllTask(); 
+            //var listTask = GetNormTask();
+            //foreach (var task in listTask)
+            //{
+            //    RestTask(task);
+            //}
+            
+            TasksManage.GetInstance().SetAllTask(GetNormExecTaskInfo());
+        }
+        
+        private List<ExecTaskInfo> GetNormExecTaskInfo() {
             var listTask = GetNormTask();
-            foreach (var task in listTask)
-            {
-                RestTask(task);
-            }
-
+            return listTask.Select(task =>
+                new ExecTaskInfo(task, GetTaskExecByGuid(task.Guid))
+                ).ToList();
         }
         public void RestTask(Ts_Tasks task) {
             TasksManage.GetInstance().SetTask(new ExecTaskInfo(task, GetTaskExecByGuid(task.Guid)));
-            
         }
     }
 }

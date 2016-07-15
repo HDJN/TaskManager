@@ -74,7 +74,7 @@ namespace TaskManager.Common.Utils
         /// <param name="timeout">超时时间（以毫秒为单位）</param>
         /// <param name="encoding">编码格式</param>
         /// <returns></returns>
-        public static string HttpRequest(string url, string data, string method, int timeout, Encoding encoding)
+        public static string HttpRequest(string url, string data, string method, int timeout, Encoding encoding,bool isLogResponse=true)
         {
             string res = string.Empty;
             //Encoding encoding = Encoding.GetEncoding("utf-8");
@@ -115,8 +115,11 @@ namespace TaskManager.Common.Utils
                 }
                 //响应
                 webResponse = webRequest.GetResponse();
-                streamReader = new StreamReader(webResponse.GetResponseStream(), encoding);
-                res = streamReader.ReadToEnd();
+                if (isLogResponse)
+                {
+                    streamReader = new StreamReader(webResponse.GetResponseStream(), encoding);
+                    res = streamReader.ReadToEnd();
+                }
             }
             catch (WebException ex)
             {
