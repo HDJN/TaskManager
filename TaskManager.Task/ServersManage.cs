@@ -53,20 +53,21 @@ namespace TaskManager.Tasks
                                 OnDeadServer(ServerCount-1, ServerCount);
                             return;
                         }
-                        HeartAction(MyServer.Id);//心跳记录
-                        int nowServerCount = QueryUseServerAction();
-                        if (nowServerCount != ServerCount)
-                        {
-                            if (nowServerCount < ServerCount) {
-                                if(OnDeadServer != null)
-                                    OnDeadServer(nowServerCount, ServerCount);
+                            HeartAction(MyServer.Id);//心跳记录
+                            int nowServerCount = QueryUseServerAction();
+                            if (nowServerCount != ServerCount)
+                            {
+                                if (nowServerCount < ServerCount)
+                                {
+                                    if (OnDeadServer != null)
+                                        OnDeadServer(nowServerCount, ServerCount);
+                                }
+                                if (OnServerCountChange != null)
+                                    OnServerCountChange(MyServer.Id);
+                                //服务器有变动
                             }
-                            if(OnServerCountChange!=null)
-                                OnServerCountChange(MyServer.Id);
-                            //服务器有变动
-                        }
-                        ServerCount = nowServerCount;
-
+                            ServerCount = nowServerCount;
+                        
                         Thread.Sleep(1000 * 60 * AppConfig.ServerHeartInterval);//休息n分钟后再执行 
                     }
                 }));
@@ -81,6 +82,8 @@ namespace TaskManager.Tasks
         public void Dispose()
         {
             IsRun = false;
+            OnServerCountChange = null;
+            OnDeadServer = null;
             mainThread = null;
             _ServerManage = null;
         }

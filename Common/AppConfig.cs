@@ -57,11 +57,11 @@ namespace TaskManager.Common {
         /// <summary>
         /// 服务器心跳时隔，分钟
         /// </summary>
-        public const int ServerHeartInterval = 1;
+        public const int ServerHeartInterval = 3;
         /// <summary>
         /// 服务器定义为超时时间
         /// </summary>
-        public const int ServerNoServiceTime = 2;
+        public const int ServerNoServiceTime = 6;
 
         #region private
         private static string GetAppSetting(string key)

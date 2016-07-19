@@ -176,8 +176,8 @@ namespace TaskManager.Services
         }
 
         private int QueryUseServerAction() {
-            DateTime outTime = DateTime.Now.AddMinutes(0 - AppConfig.ServerNoServiceTime);
-            return _ormServers.Count(w => w.IsEnable == true && w.LastHeartTime >= outTime);
+                DateTime outTime = DateTime.Now.AddMinutes(0 - AppConfig.ServerNoServiceTime);
+                return _ormServers.Count(w => w.IsEnable == true && w.LastHeartTime >= outTime);          
         }
         public Ts_Servers GetServerId(string ServerName) {
            return _ormServers.Find( w => w.ServerName == ServerName);
