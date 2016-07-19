@@ -16,7 +16,7 @@ namespace TaskManager.Repositories
         }
         public bool GetMainLock(int selfId) {
 
-            const string sql =@"if(not exists(select 1 from ts_Servers where isMain=1))
+            const string sql =@"if(not exists(select 1 from ts_Servers with(updlock) where isMain=1))
                             begin
                                 update ts_Servers set isMain = 1 where Id = @SelfId
                                 select 1

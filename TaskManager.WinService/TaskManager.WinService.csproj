@@ -78,6 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="安装\卸载.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -14,13 +14,14 @@ namespace TaskManager.Repositories
             
         }
 
-        public bool AllocationTask(int serverCount,int runServerId) {
+        public bool AllocationTask(int serverCount,int runServerId, int serverIndex) {
 
-            const string sql = @"update ts_Tasks set RunServerId=@RunServerId from ts_Tasks  where CONVERT(int,CONVERT(varbinary,Right([Guid],1)))%@ServerCount=0";
+            const string sql = @"update ts_Tasks set RunServerId=@RunServerId from ts_Tasks  where CONVERT(int,CONVERT(varbinary,Right([Guid],1)))%@ServerCount=@ServerIndex";
             return base.ExecuteCommand(sql, new
             {
                 ServerCount = serverCount,
-                RunServerId = runServerId
+                RunServerId = runServerId,
+                ServerIndex=serverIndex
             }) > 0;
         }
 

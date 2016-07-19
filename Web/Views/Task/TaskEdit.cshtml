@@ -112,7 +112,7 @@
             <label for="inputPassword" class="col-sm-2 control-label">运行服务器</label>
             <div class="col-sm-9">
                 @Html.Label("RunServerId", Model.RunServerId.ToString(), new { Class = "form-control" })
-                <p class="text-primary">当前为服务器ID： @ViewBag.CurrentServerId</p>
+                <p class="text-primary">当前运行的服务器ID</p>
             </div>
         </div>
         <div class="form-group">
@@ -170,7 +170,7 @@
                                 onSuccess();
                              
                         } else {
-                            alert('保存失败');
+                            alert(data.Msg);
                         }
                     },
                     error: function () {

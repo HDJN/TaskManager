@@ -25,6 +25,7 @@
             <tr>
                 <th>服务器ID</th>
                 <th>主机名</th> 
+                <th>心跳时间</th> 
                 <th>服务器IP</th> 
             </tr>
         </thead>
@@ -59,6 +60,15 @@
                 "columns": [
                     { "data": "Id" },
                     { "data": "ServerName" },
+                     {
+                         "data": "LastHeartTime", "render": function (data, type, row) {
+                                if (row["IsAbnormal"]) {
+                                    return "<span style='color:red'>" + tableDate(data) + "</span>";
+                                }
+
+                                return tableDate(data);
+                            }
+                      },
                     { "data": "ServerIP" },
                 ]
 

@@ -90,7 +90,7 @@ namespace TaskManager.Tasks
         private List<ExecTaskInfo> _listTask;
         private static TasksManage _taskManager;
         private static readonly object _lockobj = new object();
-        private static readonly object _locklist = new object();
+        private readonly object _locklist = new object();
         public static TasksManage GetInstance()
         {
             if (_taskManager == null)
@@ -105,6 +105,34 @@ namespace TaskManager.Tasks
             return _taskManager;
         }
         Thread mainThread = null;
+        private DateTime _lastRunTime = DateTime.Now;
+        private void SetLastRunTime() {
+            lock (_locktime) {
+                _lastRunTime = DateTime.Now;
+            }
+        }
+        public DateTime GetLastRunTime()
+        {
+            lock (_locktime)
+            {
+                return _lastRunTime;
+            }
+        }
+        /// <summary>
+        /// 检测线程是否还在运行
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckIsRun() {
+
+            DateTime tempLastRunTime;
+            lock (_locktime)
+            {
+                tempLastRunTime = _lastRunTime;
+            }
+            return DateTime.Now<= tempLastRunTime.AddMinutes(AppConfig.TaskInterval+1);
+
+        }
+        private readonly object _locktime = new object();
         public void StartUp(Action<ExecTaskInfo, TaskExecResult> ExecEndAction, Func<List<ExecTaskInfo>> QueryTaskListAction)
         {
            // SetQueryTaskListAction(QueryTaskListAction);
@@ -113,22 +141,23 @@ namespace TaskManager.Tasks
                 mainThread = new Thread(new ThreadStart(delegate () {
                     while (IsRun)
                     {
-
+                            
                             List<ExecTaskInfo> tempList = QueryTaskListAction();
                             //lock (_locklist)
                             //{
                             //    tempList = _listTask.FindAll(x => x.IsExec && x.NextExecTime <= DateTime.Now);
                             //}
-                            if (tempList.Count == 0)
-                            {
-                                Thread.Sleep(1000 * 3);
-                                continue;
-                            }
+                            //if (tempList.Count == 0)
+                            //{
+                            //    Thread.Sleep(1000 * 3);
+                            //    continue;
+                            //}
                             foreach (var item in tempList)
                             {
-                                RunTask(item, ExecEndAction);
+                                if (item.NextExecTime <= DateTime.Now)
+                                    RunTask(item, ExecEndAction);
                             }
-                       
+                        SetLastRunTime();
                         Thread.Sleep(1000 * 60 * AppConfig.TaskInterval);//休息n分钟后再执行
                         
                     }

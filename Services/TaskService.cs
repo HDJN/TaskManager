@@ -25,29 +25,60 @@ namespace TaskManager.Services
 
         private SystemService _systemService;
         private MailService _mailService;
+        private ServerService _serverService;
         public TaskService() {
             _ormTasks = taskRepository.For<Ts_Tasks>();
             _ormExecLog = taskRepository.For<Ts_ExecLog>();
             _ormTaskExec = taskRepository.For<Ts_TaskExec>();
             _mailService = new MailService();
             _systemService = new SystemService();
+            _serverService = new ServerService();
         }
         public Ts_Tasks GetTaskByGuid(string TaskGuid) {
             return _ormTasks.Find(w => w.Guid == TaskGuid);
         }
-        public bool SaveTask(Ts_Tasks tasks) {
-            tasks.RunServerId = ServersManage.GetInstance().MyServer.Id;
-            if (tasks.ExecType == (int)ExecTypeEnum.EXE)
-                tasks.IsResponseNorm = false;
-            if (string.IsNullOrEmpty(tasks.Guid)){
-                tasks.CreateUser = MyContext.CurrentUser.UserId;
-                tasks.Guid = Guid.NewGuid().ToString();
-                tasks.InsertTime = DateTime.Now;
-                _ormTasks.Add(tasks);
-                    _ormTaskExec.Add(new Ts_TaskExec() { TaskGuid = tasks.Guid });
+        public bool SaveTask(Ts_Tasks Tasks) {
+            if (Tasks.Interval < 1) {
+               throw new BOException("执行间隔不能小于1分钟"); 
+            }
+            if (!string.IsNullOrEmpty(Tasks.Encoding))
+            {
+                try
+                {
+                     Encoding.GetEncoding(Tasks.Encoding);
+                }
+                catch
+                {
+                    throw new BOException("编码输入错误");
+                }
+            }
+            Tasks.RunServerId = GetNewRunServerId();
+            if (Tasks.ExecType == (int)ExecTypeEnum.EXE)
+                Tasks.IsResponseNorm = false;
+            if (string.IsNullOrEmpty(Tasks.Guid)){
+                Tasks.CreateUser = MyContext.CurrentUser.UserId;
+                Tasks.Guid = Guid.NewGuid().ToString();
+                Tasks.InsertTime = DateTime.Now;
+                _ormTasks.Add(Tasks);
+                    _ormTaskExec.Add(new Ts_TaskExec() { TaskGuid = Tasks.Guid });
                 return true;
             }
-            return _ormTasks.Update(tasks) > 0;
+            int result = _ormTasks.Update(Tasks);
+            log.Info(string.Format("保存任务记录：{0},执行结果:{1}，操作用户:{2}", Tasks.ToJson(),result,MyContext.CurrentUser.UserName));
+            return result > 0;
+        }
+        public bool RemoveTask(string TaskGuid) {
+            bool result = true;
+            try
+            {
+                result &= _ormTaskExec.Delete(w => w.TaskGuid == TaskGuid) > 0;
+                result &= _ormTasks.Delete(w => w.Guid == TaskGuid) > 0;
+            }
+            catch (Exception ex) {
+                throw new BOException("删除不成功，消息:"+ex.Message);
+            }
+
+            return result;
         }
         public List<Ts_Tasks> GetAllTask(int Status)
         {
@@ -104,6 +135,16 @@ namespace TaskManager.Services
             }
             return _ormTasks.FindAll(w => w.Status == 1&&w.RunServerId==myserver.Id);
         }
+        public int  GetNewRunServerId( )
+        {
+            var ServerList = _serverService.GetUseServer();
+            var serverCount = ServerList.Count;
+            if (serverCount == 0)
+                return 0;
+            var serverIndex= new Random().Next(0, serverCount);
+            return ServerList[serverIndex].Id;
+        }
+
         private void ExecEndMethod(ExecTaskInfo task,TaskExecResult result) {
             if (result.Code != 0 && task.IsErrorAlert)
             {

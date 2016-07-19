@@ -7,14 +7,14 @@ using System.Collections.Generic;
 using System.Threading;
 namespace TaskManager.Tasks
 {
-    public class ServersManage
+    public class ServersManage : IDisposable
     {
 
         private ServersManage()
         {
-            
+
         }
-      
+
         private static ServersManage _ServerManage;
         private static readonly object _lockobj = new object();
         public static ServersManage GetInstance()
@@ -34,23 +34,38 @@ namespace TaskManager.Tasks
         private Thread mainThread;
         private bool IsRun;
         private int ServerCount;
-        public void StartUp(Func<int,bool> HeartAction, Func<int> QueryUseServerAction, Action<int> SetMain)
+        public event Action<int,int> OnDeadServer;
+        public event Action<int> OnServerCountChange;
+        public void StartUp(Func<int, bool> HeartAction, Func<int> QueryUseServerAction)
         {
-        
+
             if (mainThread == null)
             {
 
-                mainThread = new Thread(new ThreadStart(delegate () {
+                mainThread = new Thread(new ThreadStart(delegate ()
+                {
                     while (IsRun)
                     {
-                        HeartAction(MyServer.Id);//心跳记录
-                        int serverCount=QueryUseServerAction();
-                        if (serverCount != ServerCount)
+                        if (!TasksManage.GetInstance().CheckIsRun())//发现执行任务的线程没有执行，则停止当前线程，可以重新分配任务
                         {
-                            SetMain(MyServer.Id);
+                            IsRun = false;
+                            if (OnDeadServer != null)
+                                OnDeadServer(ServerCount-1, ServerCount);
+                            return;
+                        }
+                        HeartAction(MyServer.Id);//心跳记录
+                        int nowServerCount = QueryUseServerAction();
+                        if (nowServerCount != ServerCount)
+                        {
+                            if (nowServerCount < ServerCount) {
+                                if(OnDeadServer != null)
+                                    OnDeadServer(nowServerCount, ServerCount);
+                            }
+                            if(OnServerCountChange!=null)
+                                OnServerCountChange(MyServer.Id);
                             //服务器有变动
                         }
-                        ServerCount = serverCount;
+                        ServerCount = nowServerCount;
 
                         Thread.Sleep(1000 * 60 * AppConfig.ServerHeartInterval);//休息n分钟后再执行 
                     }
@@ -62,5 +77,13 @@ namespace TaskManager.Tasks
             IsRun = true;
             mainThread.Start();
         }
+
+        public void Dispose()
+        {
+            IsRun = false;
+            mainThread = null;
+            _ServerManage = null;
+        }
     }
+
 }

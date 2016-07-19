@@ -138,9 +138,10 @@ GO
 
  
  
+
 declare @TbName varchar (50)
 declare @sql varchar (5000)
-Select @TbName='ts_ExecLog_'+CONVERT(char(6), GETDATE(),112) 	
+Select @TbName='ts_ExecLog_'+CONVERT(char(6),  dateadd(month,1, GETDATE()) ,112) 	
 IF  not EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(@TbName) AND type in (N'U'))
 begin
 set @sql='

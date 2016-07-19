@@ -13,12 +13,13 @@ using TaskManager.Tasks;
 namespace TaskManager.Web.Controllers
 {
     [MyAuthorize]
-    public class TaskController : Controller
+    public class TaskController : BaseController
     {
         private TaskService _taskService = new TaskService();
         // GET: Task
         public ActionResult TaskList()
         {
+            ViewBag.IsAdmin = IsAdmin;        
             return View();
         }
         [HttpPost]
@@ -65,7 +66,6 @@ namespace TaskManager.Web.Controllers
             }
             ExecMethodList.Add(new SelectListItem() { Value = "", Text = "请选择" });
             ViewBag.ExecMethodList = ExecMethodList;
-            ViewBag.CurrentServerId = ServersManage.GetInstance().MyServer.Id;
 
         }
         public ActionResult TaskAdd()
@@ -73,6 +73,7 @@ namespace TaskManager.Web.Controllers
             InitTask();
 
             Ts_Tasks tasks = new Ts_Tasks();
+            tasks.RunServerId = _taskService.GetNewRunServerId();
            // tasks.ExecMethod = "GET";
             return View("TaskEdit", tasks);
         }
@@ -98,6 +99,22 @@ namespace TaskManager.Web.Controllers
                 msg.IsSuccess = _taskService.RunTask(TaskGuid);
             }
             catch (Exception ex) {
+                msg.Msg = ex.Message;
+            }
+            return Json(msg);
+        }
+        [AdminAuthorize]
+        [HttpPost]
+        public ActionResult RemoveTask(string TaskGuid)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+              _taskService.RemoveTask(TaskGuid);
+                msg.IsSuccess = true;
+            }
+            catch (BOException ex)
+            {
                 msg.Msg = ex.Message;
             }
             return Json(msg);

@@ -16,16 +16,19 @@ namespace TaskManager.WinService
     {
         public TaskWinService()
         {
+          
             InitializeComponent();
         }
          protected override void OnStart(string[] args)
         {
             ORMConfig.RegisterORM();
+            _taskService = new TaskService();
+            _serverService = new ServerService();
             _serverService.Register();
             _taskService.StartUp();
         }
-        TaskService _taskService = new  TaskService();
-        ServerService _serverService = new ServerService();
+        TaskService _taskService = null;
+        ServerService _serverService = null;
 
         protected override void OnStop()
         {
