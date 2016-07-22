@@ -119,11 +119,11 @@
                         "data": "Guid", "render": function (data, type, row, meta) {
                             var optionHtml = "";
                             if('@ViewBag.IsAdmin'=='True'){
-                                optionHtml += "<a class='btn btn-default btnAdd' href='javascript:void(0)' onclick='Delete(\"" + data + "\")'>删除</a> <br/>";
+                                optionHtml += "<a class='btn btn-default' href='javascript:void(0)' onclick='Delete(\"" + data + "\")'>删除</a> <br/>";
                             }
-                            optionHtml += "<a class='btn btn-default btnAdd' href='javascript:void(0)' onclick='Edit(\"" + data + "\")'>编辑</a> <br/>";
-                            optionHtml += "<a class='btn btn-default btnAdd' href='javascript:void(0)' onclick='Run(\"" + data + "\")'>立即执行</a> <br/>";
-                            optionHtml += "<a class='btn btn-default btnAdd' href='TaskLogs?TaskGuid=" + data + "'>执行记录</a>";
+                            optionHtml += "<a class='btn btn-default' href='javascript:void(0)' onclick='Edit(\"" + data + "\")'>编辑</a> <br/>";
+                            optionHtml += "<a class='btn btn-default' href='javascript:void(0)' onclick='Run(\"" + data + "\")'>立即执行</a> <br/>";
+                            optionHtml += "<a class='btn btn-default' href='TaskLogs?TaskGuid=" + data + "'>执行记录</a>";
                             return optionHtml;
                         }
                     }

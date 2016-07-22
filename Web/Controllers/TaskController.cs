@@ -73,6 +73,7 @@ namespace TaskManager.Web.Controllers
             InitTask();
 
             Ts_Tasks tasks = new Ts_Tasks();
+            tasks.TimeOut = 30;
             tasks.RunServerId = _taskService.GetNewRunServerId();
            // tasks.ExecMethod = "GET";
             return View("TaskEdit", tasks);

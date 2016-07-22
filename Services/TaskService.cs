@@ -41,6 +41,10 @@ namespace TaskManager.Services
             if (Tasks.Interval < 1) {
                throw new BOException("执行间隔不能小于1分钟"); 
             }
+            if (Tasks.TimeOut<=0)
+            {
+                throw new BOException("超时时间必需大于0");
+            }
             if (!string.IsNullOrEmpty(Tasks.Encoding))
             {
                 try
