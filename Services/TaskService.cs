@@ -161,7 +161,7 @@ namespace TaskManager.Services
             tsLog.ExecEndTime = task.ExecEndTime;
             tsLog.ExecParams = task.Params;
             result.Data = result.Data?? string.Empty;
-            tsLog.ExecResult = task.IsResponseNorm?result.ToJson():result.Data.ToString();
+            tsLog.ExecResult = result.ToJson();
             tsLog.ExecResultCode = result.Code;
             tsLog.ExecStatrtTime = task.LastExecTime;
             tsLog.ExecUrl = task.ExecUrl;

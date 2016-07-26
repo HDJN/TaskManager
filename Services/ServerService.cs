@@ -80,6 +80,7 @@ namespace TaskManager.Services
                 {
                     Server.IsEnable = true;
                     Server.ServerName = ServerName;
+                    Server.IsMain = false;
                     Server.ServerIP = ServerIPs.Select<IPAddress, string>(x => x.ToString()).ToJson();
                     result = (int)_ormServers.Add(Server);
                     Server.Id = result;

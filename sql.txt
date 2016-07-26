@@ -131,6 +131,7 @@ EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ID' , @level0t
 GO
 
 ALTER TABLE [dbo].[ts_Servers] ADD  CONSTRAINT [DF_ts_Servers_IsEnable]  DEFAULT ((1)) FOR [IsEnable]
+ALTER TABLE [dbo].[ts_Servers] ADD  CONSTRAINT [DF_ts_Servers_IsMain]  DEFAULT ((0)) FOR [IsMain]
 GO
 
 
