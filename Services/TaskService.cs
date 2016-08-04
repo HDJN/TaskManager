@@ -113,7 +113,7 @@ namespace TaskManager.Services
             if (task == null)
                 throw new BOException("找不到任务ID");
             var taskinfo = new ExecTaskInfo(task, GetTaskExecByGuid(task.Guid));
-            TasksManage.GetInstance().RunTask(taskinfo,ExecEndMethod);
+            TasksManage.GetInstance().RunTask(taskinfo);
             return true;
         }
         public Ts_TaskExec GetTaskExecByGuid(string TaskGuid) {
@@ -149,44 +149,86 @@ namespace TaskManager.Services
             return ServerList[serverIndex].Id;
         }
 
-        private void ExecEndMethod(ExecTaskInfo task,TaskExecResult result) {
-            if (result.Code != 0 && task.IsErrorAlert)
-            {
-                _mailService.SendEmail(string.Format("任务【{0}】执行异常", task.Title),
-                    string.Format("您的任务:{0}\r\n执行异常:\r\n{1}", task.Title, result.Data),
-                    task.ReceiveEmail);
-            }
-
-            Ts_ExecLog tsLog = new Ts_ExecLog();
-            tsLog.ExecEndTime = task.ExecEndTime;
-            tsLog.ExecParams = task.Params;
-            result.Data = result.Data?? string.Empty;
-            tsLog.ExecResult = result.ToJson();
-            tsLog.ExecResultCode = result.Code;
-            tsLog.ExecStatrtTime = task.LastExecTime;
-            tsLog.ExecUrl = task.ExecUrl;
-            tsLog.TaskGuid = task.Guid;
-
-            long logId = _ormExecLog.Add(tsLog);
-
-            Ts_TaskExec taskExec = new Ts_TaskExec();
-            taskExec.LastExecId = (int)logId;
-            taskExec.LastExecResultCode = result.Code;
-            taskExec.LastExecTime = task.LastExecTime;
-            taskExec.TaskGuid = task.Guid;
-
-            _ormTaskExec.Update(taskExec);
-        }
+      
         public void StartUp() {
            var listTask= GetNormTask();
+            TasksManage taskManager = TasksManage.GetInstance();
             foreach (var task in listTask)
             {
-                TasksManage.GetInstance().SetTask(new ExecTaskInfo(task,GetTaskExecByGuid(task.Guid)));
+                taskManager.SetTask(new ExecTaskInfo(task,GetTaskExecByGuid(task.Guid)));
             }
 
-            TasksManage.GetInstance().StartUp(ExecEndMethod, GetNormExecTaskInfo);
+            taskManager.OnTaskExecAfter += TaskManager_OnTaskExecAfter;
+            taskManager.OnTaskExecBefore += TaskManager_OnTaskExecBefore;
+            taskManager.StartUp(GetNormExecTaskInfo);
+            
         }
-       
+
+        private void TaskManager_OnTaskExecAfter(TaskExecLog taskExecLog, TaskExecResult result)
+        {
+
+            try
+            {
+                Ts_ExecLog tsLog = new Ts_ExecLog();
+                tsLog.ExecEndTime = taskExecLog.ExecEndTime;
+                result.Data = result.Data ?? string.Empty;
+                tsLog.ExecResult = result.ToJson();
+                tsLog.ExecResultCode = result.Code;
+                tsLog.ExecStatrtTime = taskExecLog.ExecStatrtTime;
+
+                if (_ormExecLog.Update(tsLog, w => w.Id == taskExecLog.ExecLogId)!=1)
+                {
+                    log.Error(string.Format("执行后更新记录异常,logId={0},结果:{1}",taskExecLog.ExecLogId, tsLog.ExecResult));
+                }
+
+                Ts_TaskExec taskExec = new Ts_TaskExec();
+                taskExec.LastExecResultCode = result.Code;
+
+                _ormTaskExec.Update(taskExec,w=>w.TaskGuid==taskExecLog.ExecGuid);
+            }
+            catch (Exception ex)
+            {
+                log.Error("保存执行结果异常", ex);
+            }
+
+            if (result.Code != 0 && taskExecLog.IsErrorAlert)
+            {
+                _mailService.SendEmail(string.Format("任务【{0}】执行异常", taskExecLog.Title),
+                    string.Format("您的任务:{0}\r\n执行异常:\r\n{1}", taskExecLog.Title, result.Data),
+                    taskExecLog.ReceiveEmail);
+            }
+        }
+
+        private int TaskManager_OnTaskExecBefore(ExecTaskInfo task)
+        {
+            int logId = 0;
+            try
+            {
+                Ts_ExecLog tsLog = new Ts_ExecLog();
+                tsLog.ExecParams = task.Params;
+                tsLog.ExecStatrtTime = task.LastExecTime;
+                tsLog.ExecUrl = task.ExecUrl;
+                tsLog.TaskGuid = task.Guid;
+
+                 logId =(int) _ormExecLog.Add(tsLog);
+
+                Ts_TaskExec taskExec = new Ts_TaskExec();
+                taskExec.LastExecId = logId;
+                taskExec.LastExecTime = task.LastExecTime;
+                taskExec.TaskGuid = task.Guid;
+
+                _ormTaskExec.Update(taskExec);
+            }
+            catch (Exception ex)
+            {
+                log.Error("保存执行结果异常", ex);
+            }
+            return logId;
+
+        }
+
+      
+
         public void RestAll() {
             //TasksManage.GetInstance().RemoveAllTask(); 
             //var listTask = GetNormTask();

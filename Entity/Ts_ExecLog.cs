@@ -13,7 +13,9 @@ namespace TaskManager.Entity
         {
             get
             {
-                return ( _ExecEndTime- _ExecStatrtTime ).Milliseconds;
+                  if(_ExecEndTime.HasValue)
+                    return ( _ExecEndTime.Value- _ExecStatrtTime).Milliseconds;
+                return -1;
             }
         }
        

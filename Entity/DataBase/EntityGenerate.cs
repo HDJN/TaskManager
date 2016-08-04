@@ -17,7 +17,7 @@ namespace TaskManager.Entity
 	{
 		private int _Id;
 		/// <summary>
-		/// 
+		/// 日志Id
 		///  int(10)
 		/// </summary>
 		[Identity, PrimaryKey(1)] 
@@ -25,7 +25,7 @@ namespace TaskManager.Entity
 		{ get{ return _Id; } 	set{ _Id = value ;  OnPropertyChanged("Id"); } }
 		private string _TaskGuid;
 		/// <summary>
-		/// 
+		/// 任务Guid
 		///  varchar(36)
 		/// </summary>
 
@@ -33,39 +33,39 @@ namespace TaskManager.Entity
 		{ get{ return _TaskGuid; } 	set{ _TaskGuid = value ;  OnPropertyChanged("TaskGuid"); } }
 		private DateTime _ExecStatrtTime;
 		/// <summary>
-		/// 
+		/// 起始时间
 		///  datetime(3)
 		/// </summary>
 
 		public DateTime ExecStatrtTime
 		{ get{ return _ExecStatrtTime; } 	set{ _ExecStatrtTime = value ;  OnPropertyChanged("ExecStatrtTime"); } }
-		private DateTime _ExecEndTime;
+		private DateTime? _ExecEndTime;
 		/// <summary>
-		/// 
+		/// 结束时间
 		///  datetime(3)
 		/// </summary>
-
-		public DateTime ExecEndTime
+		[Nullable  ] 
+		public DateTime? ExecEndTime
 		{ get{ return _ExecEndTime; } 	set{ _ExecEndTime = value ;  OnPropertyChanged("ExecEndTime"); } }
 		private string _ExecResult;
 		/// <summary>
-		/// 
+		/// 响应
 		///  varchar(-1)
 		/// </summary>
-
+		[Nullable  ] 
 		public string ExecResult
 		{ get{ return _ExecResult; } 	set{ _ExecResult = value ;  OnPropertyChanged("ExecResult"); } }
-		private int _ExecResultCode;
+		private int? _ExecResultCode;
 		/// <summary>
-		/// 
+		/// 结果
 		///  int(10)
 		/// </summary>
-
-		public int ExecResultCode
+		[Nullable  ] 
+		public int? ExecResultCode
 		{ get{ return _ExecResultCode; } 	set{ _ExecResultCode = value ;  OnPropertyChanged("ExecResultCode"); } }
 		private string _ExecUrl;
 		/// <summary>
-		/// 
+		/// 调用路径
 		///  varchar(200)
 		/// </summary>
 
@@ -73,7 +73,7 @@ namespace TaskManager.Entity
 		{ get{ return _ExecUrl; } 	set{ _ExecUrl = value ;  OnPropertyChanged("ExecUrl"); } }
 		private string _ExecParams;
 		/// <summary>
-		/// 
+		/// 请求参数
 		///  varchar(200)
 		/// </summary>
 		[Nullable  ] 
@@ -81,8 +81,8 @@ namespace TaskManager.Entity
 		{ get{ return _ExecParams; } 	set{ _ExecParams = value ;  OnPropertyChanged("ExecParams"); } }
 	}
 
-	[TableName("ts_ExecLog_201607")]
-	public partial class Ts_ExecLog_201607 : BaseEntity
+	[TableName("ts_ExecLog_201608")]
+	public partial class Ts_ExecLog_201608 : BaseEntity
 	{
 		private int _Id;
 		/// <summary>
@@ -108,29 +108,98 @@ namespace TaskManager.Entity
 
 		public DateTime ExecStatrtTime
 		{ get{ return _ExecStatrtTime; } 	set{ _ExecStatrtTime = value ;  OnPropertyChanged("ExecStatrtTime"); } }
-		private DateTime _ExecEndTime;
+		private DateTime? _ExecEndTime;
 		/// <summary>
 		/// 
 		///  datetime(3)
 		/// </summary>
-
-		public DateTime ExecEndTime
+		[Nullable  ] 
+		public DateTime? ExecEndTime
 		{ get{ return _ExecEndTime; } 	set{ _ExecEndTime = value ;  OnPropertyChanged("ExecEndTime"); } }
 		private string _ExecResult;
 		/// <summary>
 		/// 
 		///  varchar(-1)
 		/// </summary>
-
+		[Nullable  ] 
 		public string ExecResult
 		{ get{ return _ExecResult; } 	set{ _ExecResult = value ;  OnPropertyChanged("ExecResult"); } }
-		private int _ExecResultCode;
+		private int? _ExecResultCode;
 		/// <summary>
 		/// 
 		///  int(10)
 		/// </summary>
+		[Nullable  ] 
+		public int? ExecResultCode
+		{ get{ return _ExecResultCode; } 	set{ _ExecResultCode = value ;  OnPropertyChanged("ExecResultCode"); } }
+		private string _ExecUrl;
+		/// <summary>
+		/// 
+		///  varchar(200)
+		/// </summary>
 
-		public int ExecResultCode
+		public string ExecUrl
+		{ get{ return _ExecUrl; } 	set{ _ExecUrl = value ;  OnPropertyChanged("ExecUrl"); } }
+		private string _ExecParams;
+		/// <summary>
+		/// 
+		///  varchar(200)
+		/// </summary>
+		[Nullable  ] 
+		public string ExecParams
+		{ get{ return _ExecParams; } 	set{ _ExecParams = value ;  OnPropertyChanged("ExecParams"); } }
+	}
+
+	[TableName("ts_ExecLog_201609")]
+	public partial class Ts_ExecLog_201609 : BaseEntity
+	{
+		private int _Id;
+		/// <summary>
+		/// 
+		///  int(10)
+		/// </summary>
+		[Identity, PrimaryKey(1)] 
+		public int Id
+		{ get{ return _Id; } 	set{ _Id = value ;  OnPropertyChanged("Id"); } }
+		private string _TaskGuid;
+		/// <summary>
+		/// 
+		///  varchar(36)
+		/// </summary>
+
+		public string TaskGuid
+		{ get{ return _TaskGuid; } 	set{ _TaskGuid = value ;  OnPropertyChanged("TaskGuid"); } }
+		private DateTime _ExecStatrtTime;
+		/// <summary>
+		/// 
+		///  datetime(3)
+		/// </summary>
+
+		public DateTime ExecStatrtTime
+		{ get{ return _ExecStatrtTime; } 	set{ _ExecStatrtTime = value ;  OnPropertyChanged("ExecStatrtTime"); } }
+		private DateTime? _ExecEndTime;
+		/// <summary>
+		/// 
+		///  datetime(3)
+		/// </summary>
+		[Nullable  ] 
+		public DateTime? ExecEndTime
+		{ get{ return _ExecEndTime; } 	set{ _ExecEndTime = value ;  OnPropertyChanged("ExecEndTime"); } }
+		private string _ExecResult;
+		/// <summary>
+		/// 
+		///  varchar(-1)
+		/// </summary>
+		[Nullable  ] 
+		public string ExecResult
+		{ get{ return _ExecResult; } 	set{ _ExecResult = value ;  OnPropertyChanged("ExecResult"); } }
+		private int? _ExecResultCode;
+		/// <summary>
+		/// 
+		///  int(10)
+		/// </summary>
+		[Nullable  ] 
+		public int? ExecResultCode
 		{ get{ return _ExecResultCode; } 	set{ _ExecResultCode = value ;  OnPropertyChanged("ExecResultCode"); } }
 		private string _ExecUrl;
 		/// <summary>
@@ -155,7 +224,7 @@ namespace TaskManager.Entity
 	{
 		private int _Id;
 		/// <summary>
-		/// ID
+		/// 服务器Id
 		///  int(10)
 		/// </summary>
 		[Identity, PrimaryKey(1)] 
@@ -163,7 +232,7 @@ namespace TaskManager.Entity
 		{ get{ return _Id; } 	set{ _Id = value ;  OnPropertyChanged("Id"); } }
 		private string _ServerName;
 		/// <summary>
-		/// 
+		/// 服务器名称
 		///  varchar(50)
 		/// </summary>
 
@@ -171,7 +240,7 @@ namespace TaskManager.Entity
 		{ get{ return _ServerName; } 	set{ _ServerName = value ;  OnPropertyChanged("ServerName"); } }
 		private DateTime _LastHeartTime;
 		/// <summary>
-		/// 
+		/// 上次心跳时间
 		///  datetime(3)
 		/// </summary>
 
@@ -179,7 +248,7 @@ namespace TaskManager.Entity
 		{ get{ return _LastHeartTime; } 	set{ _LastHeartTime = value ;  OnPropertyChanged("LastHeartTime"); } }
 		private bool _IsEnable;
 		/// <summary>
-		/// 
+		/// 是否可用
 		///  bit
 		/// </summary>
 
@@ -187,7 +256,7 @@ namespace TaskManager.Entity
 		{ get{ return _IsEnable; } 	set{ _IsEnable = value ;  OnPropertyChanged("IsEnable"); } }
 		private string _ServerIP;
 		/// <summary>
-		/// 
+		/// 服务器IP
 		///  varchar(200)
 		/// </summary>
 		[Nullable  ] 
@@ -195,7 +264,7 @@ namespace TaskManager.Entity
 		{ get{ return _ServerIP; } 	set{ _ServerIP = value ;  OnPropertyChanged("ServerIP"); } }
 		private bool _IsMain;
 		/// <summary>
-		/// 
+		/// 是否主服务器
 		///  bit
 		/// </summary>
 
@@ -208,7 +277,7 @@ namespace TaskManager.Entity
 	{
 		private string _TaskGuid;
 		/// <summary>
-		/// 
+		/// 任务Guid
 		///  varchar(36)
 		/// </summary>
 		[  PrimaryKey(1)] 
@@ -216,7 +285,7 @@ namespace TaskManager.Entity
 		{ get{ return _TaskGuid; } 	set{ _TaskGuid = value ;  OnPropertyChanged("TaskGuid"); } }
 		private DateTime? _LastExecTime;
 		/// <summary>
-		/// 
+		/// 最近执行时间
 		///  datetime(3)
 		/// </summary>
 		[Nullable  ] 
@@ -224,7 +293,7 @@ namespace TaskManager.Entity
 		{ get{ return _LastExecTime; } 	set{ _LastExecTime = value ;  OnPropertyChanged("LastExecTime"); } }
 		private int? _LastExecId;
 		/// <summary>
-		/// 
+		/// 最近执行记录LogId
 		///  int(10)
 		/// </summary>
 		[Nullable  ] 
@@ -232,7 +301,7 @@ namespace TaskManager.Entity
 		{ get{ return _LastExecId; } 	set{ _LastExecId = value ;  OnPropertyChanged("LastExecId"); } }
 		private int? _LastExecResultCode;
 		/// <summary>
-		/// 
+		/// 最近执行结果
 		///  int(10)
 		/// </summary>
 		[Nullable  ] 
@@ -245,7 +314,7 @@ namespace TaskManager.Entity
 	{
 		private string _Guid;
 		/// <summary>
-		/// 
+		/// 任务Guid
 		///  varchar(36)
 		/// </summary>
 		[  PrimaryKey(1)] 
@@ -253,7 +322,7 @@ namespace TaskManager.Entity
 		{ get{ return _Guid; } 	set{ _Guid = value ;  OnPropertyChanged("Guid"); } }
 		private int _CreateUser;
 		/// <summary>
-		/// 
+		/// 创建者
 		///  int(10)
 		/// </summary>
 
@@ -261,7 +330,7 @@ namespace TaskManager.Entity
 		{ get{ return _CreateUser; } 	set{ _CreateUser = value ;  OnPropertyChanged("CreateUser"); } }
 		private string _Title;
 		/// <summary>
-		/// 
+		/// 主题
 		///  nvarchar(50)
 		/// </summary>
 
@@ -269,7 +338,7 @@ namespace TaskManager.Entity
 		{ get{ return _Title; } 	set{ _Title = value ;  OnPropertyChanged("Title"); } }
 		private string _ExecUrl;
 		/// <summary>
-		/// 
+		/// 执行路径
 		///  varchar(200)
 		/// </summary>
 
@@ -277,7 +346,7 @@ namespace TaskManager.Entity
 		{ get{ return _ExecUrl; } 	set{ _ExecUrl = value ;  OnPropertyChanged("ExecUrl"); } }
 		private int _ExecType;
 		/// <summary>
-		/// 
+		/// 执行类型 HTTP=1,EXE=2
 		///  int(10)
 		/// </summary>
 
@@ -285,7 +354,7 @@ namespace TaskManager.Entity
 		{ get{ return _ExecType; } 	set{ _ExecType = value ;  OnPropertyChanged("ExecType"); } }
 		private int _Interval;
 		/// <summary>
-		/// 
+		/// 时间间隔(分)
 		///  int(10)
 		/// </summary>
 
@@ -293,7 +362,7 @@ namespace TaskManager.Entity
 		{ get{ return _Interval; } 	set{ _Interval = value ;  OnPropertyChanged("Interval"); } }
 		private DateTime _InsertTime;
 		/// <summary>
-		/// 
+		/// 插入时间
 		///  datetime(3)
 		/// </summary>
 
@@ -301,7 +370,7 @@ namespace TaskManager.Entity
 		{ get{ return _InsertTime; } 	set{ _InsertTime = value ;  OnPropertyChanged("InsertTime"); } }
 		private int _Status;
 		/// <summary>
-		/// 
+		/// 是否启用 启用=1,禁用=-1
 		///  int(10)
 		/// </summary>
 
@@ -309,7 +378,7 @@ namespace TaskManager.Entity
 		{ get{ return _Status; } 	set{ _Status = value ;  OnPropertyChanged("Status"); } }
 		private bool _IsResponseNorm;
 		/// <summary>
-		/// 
+		/// 是否判断调用成功失败
 		///  bit
 		/// </summary>
 
@@ -317,7 +386,7 @@ namespace TaskManager.Entity
 		{ get{ return _IsResponseNorm; } 	set{ _IsResponseNorm = value ;  OnPropertyChanged("IsResponseNorm"); } }
 		private string _ExecMethod;
 		/// <summary>
-		/// 
+		/// 请求类型 GET/POST/等
 		///  varchar(10)
 		/// </summary>
 		[Nullable  ] 
@@ -325,7 +394,7 @@ namespace TaskManager.Entity
 		{ get{ return _ExecMethod; } 	set{ _ExecMethod = value ;  OnPropertyChanged("ExecMethod"); } }
 		private int _TimeOut;
 		/// <summary>
-		/// 
+		/// 超时时间(秒)
 		///  int(10)
 		/// </summary>
 
@@ -333,7 +402,7 @@ namespace TaskManager.Entity
 		{ get{ return _TimeOut; } 	set{ _TimeOut = value ;  OnPropertyChanged("TimeOut"); } }
 		private bool _IsLogResult;
 		/// <summary>
-		/// 
+		/// 是否记录响应
 		///  bit
 		/// </summary>
 
@@ -341,7 +410,7 @@ namespace TaskManager.Entity
 		{ get{ return _IsLogResult; } 	set{ _IsLogResult = value ;  OnPropertyChanged("IsLogResult"); } }
 		private string _Encoding;
 		/// <summary>
-		/// 
+		/// 编码
 		///  varchar(50)
 		/// </summary>
 		[Nullable  ] 
@@ -349,7 +418,7 @@ namespace TaskManager.Entity
 		{ get{ return _Encoding; } 	set{ _Encoding = value ;  OnPropertyChanged("Encoding"); } }
 		private string _ExecParams;
 		/// <summary>
-		/// 
+		/// 调用参数
 		///  varchar(200)
 		/// </summary>
 		[Nullable  ] 
@@ -357,7 +426,7 @@ namespace TaskManager.Entity
 		{ get{ return _ExecParams; } 	set{ _ExecParams = value ;  OnPropertyChanged("ExecParams"); } }
 		private bool _IsErrorAlert;
 		/// <summary>
-		/// 
+		/// 是否报警
 		///  bit
 		/// </summary>
 
@@ -365,7 +434,7 @@ namespace TaskManager.Entity
 		{ get{ return _IsErrorAlert; } 	set{ _IsErrorAlert = value ;  OnPropertyChanged("IsErrorAlert"); } }
 		private string _ReceiveEmail;
 		/// <summary>
-		/// 
+		/// 接受邮箱
 		///  varchar(200)
 		/// </summary>
 		[Nullable  ] 
@@ -373,7 +442,7 @@ namespace TaskManager.Entity
 		{ get{ return _ReceiveEmail; } 	set{ _ReceiveEmail = value ;  OnPropertyChanged("ReceiveEmail"); } }
 		private int _RunServerId;
 		/// <summary>
-		/// 
+		/// 运行服务器Id
 		///  int(10)
 		/// </summary>
 
@@ -386,7 +455,7 @@ namespace TaskManager.Entity
 	{
 		private int _UserId;
 		/// <summary>
-		/// 
+		/// 用户ID
 		///  int(10)
 		/// </summary>
 		[Identity, PrimaryKey(1)] 
@@ -394,7 +463,7 @@ namespace TaskManager.Entity
 		{ get{ return _UserId; } 	set{ _UserId = value ;  OnPropertyChanged("UserId"); } }
 		private string _UserName;
 		/// <summary>
-		/// 
+		/// 登录名称
 		///  varchar(50)
 		/// </summary>
 
@@ -402,7 +471,7 @@ namespace TaskManager.Entity
 		{ get{ return _UserName; } 	set{ _UserName = value ;  OnPropertyChanged("UserName"); } }
 		private string _PassWord;
 		/// <summary>
-		/// 
+		/// 密码
 		///  varchar(50)
 		/// </summary>
 
@@ -410,7 +479,7 @@ namespace TaskManager.Entity
 		{ get{ return _PassWord; } 	set{ _PassWord = value ;  OnPropertyChanged("PassWord"); } }
 		private DateTime _InsertTime;
 		/// <summary>
-		/// 
+		/// 插入时间
 		///  datetime(3)
 		/// </summary>
 
@@ -418,7 +487,7 @@ namespace TaskManager.Entity
 		{ get{ return _InsertTime; } 	set{ _InsertTime = value ;  OnPropertyChanged("InsertTime"); } }
 		private string _RealName;
 		/// <summary>
-		/// 
+		/// 姓名
 		///  varchar(50)
 		/// </summary>
 
@@ -426,7 +495,7 @@ namespace TaskManager.Entity
 		{ get{ return _RealName; } 	set{ _RealName = value ;  OnPropertyChanged("RealName"); } }
 		private int _Status;
 		/// <summary>
-		/// 
+		/// 是否启用 启用=1,禁用=-1
 		///  int(10)
 		/// </summary>
 

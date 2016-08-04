@@ -14,7 +14,7 @@ namespace TaskManager.Services.Config
 
             SmiteRepository.Extansions.RegisterORM.Register_CustomTableNameToInsert<Ts_ExecLog>(delegate (Ts_ExecLog Entity)
             {
-                  return string.Format("ts_ExecLog_{0}",System.DateTime.Now.ToString("yyyyMM"));
+                  return string.Format("ts_ExecLog_{0}", Entity.ExecStatrtTime.ToString("yyyyMM"));
             });
 
 
@@ -36,7 +36,12 @@ namespace TaskManager.Services.Config
                  return new string[] { string.Format("ts_ExecLog_{0}", System.DateTime.Now.ToString("yyyyMM")) };
              });
 
-            
+            SmiteRepository.Extansions.RegisterORM.Register_CustomTableNameToUpdate<Ts_ExecLog>(w =>
+           w.Id == 0,
+            delegate (object[] SqlParams, Ts_ExecLog Entity)
+            {
+                return new string[] { string.Format("ts_ExecLog_{0}", Entity.ExecStatrtTime.ToString("yyyyMM")) };
+            });
         }
     }
 }

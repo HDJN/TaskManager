@@ -89,7 +89,10 @@ tr.shown td.details-control {
                         "data": "ExecTime",
                         orderable:false,
                         render: function (data) {
-
+                            if (data == -1)
+                            {
+                                return "执行中";
+                            }
                             var strTime = "";
                             if (data > 1000) {
 

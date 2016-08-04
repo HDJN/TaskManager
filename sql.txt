@@ -25,6 +25,15 @@ GO
 SET IDENTITY_INSERT [dbo].[tu_Users] ON
 INSERT [dbo].[tu_Users] ([UserId], [UserName], [PassWord], [InsertTime], [RealName], [Status]) VALUES (2, N'admin', N'123', CAST(0x0000A62400000000 AS DateTime), N'管理1', 1)
 SET IDENTITY_INSERT [dbo].[tu_Users] OFF
+
+--给列添加注释
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'用户ID' ,@level2name=N'UserId',@level1name=N'tu_Users', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'登录名称' ,@level2name=N'UserName',@level1name=N'tu_Users', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'密码' ,@level2name=N'PassWord',@level1name=N'tu_Users', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'姓名' ,@level2name=N'RealName',@level1name=N'tu_Users', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否启用 启用=1,禁用=-1' ,@level2name=N'Status',@level1name=N'tu_Users', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'插入时间' ,@level2name=N'InsertTime',@level1name=N'tu_Users', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+
 /****** Object:  Table [dbo].[ts_Tasks]    Script Date: 06/14/2016 09:57:09 ******/
 
 
@@ -63,6 +72,25 @@ GO
 ALTER TABLE [dbo].[ts_Tasks] ADD  CONSTRAINT [DF_ts_Tasks_IsResponseNorm]  DEFAULT ((0)) FOR [IsResponseNorm]
 GO
 
+--给列添加注释
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'任务Guid' ,@level2name=N'Guid',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'创建者' ,@level2name=N'CreateUser',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'主题' ,@level2name=N'Title',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'执行路径' ,@level2name=N'ExecUrl',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'执行类型 HTTP=1,EXE=2' ,@level2name=N'ExecType',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'时间间隔(分)' ,@level2name=N'Interval',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否启用 启用=1,禁用=-1' ,@level2name=N'Status',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否判断调用成功失败' ,@level2name=N'IsResponseNorm',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'请求类型 GET/POST/等' ,@level2name=N'ExecMethod',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'超时时间(秒)' ,@level2name=N'TimeOut',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否记录响应' ,@level2name=N'IsLogResult',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'编码' ,@level2name=N'Encoding',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'调用参数' ,@level2name=N'ExecParams',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否报警' ,@level2name=N'IsErrorAlert',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'接受邮箱' ,@level2name=N'ReceiveEmail',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'运行服务器Id' ,@level2name=N'RunServerId',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'插入时间' ,@level2name=N'InsertTime',@level1name=N'ts_Tasks', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+
 
 
 GO
@@ -79,6 +107,14 @@ CREATE TABLE [dbo].[ts_TaskExec](
 GO
 SET ANSI_PADDING OFF
 GO
+
+--给列添加注释
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'任务Guid' ,@level2name=N'TaskGuid',@level1name=N'ts_TaskExec', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'最近执行时间' ,@level2name=N'LastExecTime',@level1name=N'ts_TaskExec', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'最近执行记录LogId' ,@level2name=N'LastExecId',@level1name=N'ts_TaskExec', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'最近执行结果' ,@level2name=N'LastExecResultCode',@level1name=N'ts_TaskExec', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+
+
 /****** Object:  Table [dbo].[ts_ExecLog]    Script Date: 06/14/2016 09:57:09 ******/
 SET ANSI_NULLS ON
 GO
@@ -90,9 +126,9 @@ CREATE TABLE [dbo].[ts_ExecLog](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[TaskGuid] [varchar](36) NOT NULL,
 	[ExecStatrtTime] [datetime] NOT NULL,
-	[ExecEndTime] [datetime] NOT NULL,
-	[ExecResult] [varchar](max) NOT NULL,
-	[ExecResultCode] [int] NOT NULL,
+	[ExecEndTime] [datetime] NULL,
+	[ExecResult] [varchar](max) NULL,
+	[ExecResultCode] [int] NULL,
 	[ExecUrl] [varchar](200) NOT NULL,
 	[ExecParams] [varchar](200) NULL,
  CONSTRAINT [PK_ts_ExecLog] PRIMARY KEY CLUSTERED 
@@ -101,6 +137,17 @@ CREATE TABLE [dbo].[ts_ExecLog](
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+--给列添加注释
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'日志Id' ,@level2name=N'Id',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'任务Guid' ,@level2name=N'TaskGuid',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'起始时间' ,@level2name=N'ExecStatrtTime',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'结束时间' ,@level2name=N'ExecEndTime',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'响应' ,@level2name=N'ExecResult',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'结果' ,@level2name=N'ExecResultCode',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'调用路径' ,@level2name=N'ExecUrl',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'请求参数' ,@level2name=N'ExecParams',@level1name=N'ts_ExecLog', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+
 
 SET ANSI_NULLS ON
 GO
@@ -127,13 +174,18 @@ CREATE TABLE [dbo].[ts_Servers](
 SET ANSI_PADDING OFF
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'ts_Servers', @level2type=N'COLUMN',@level2name=N'Id'
-GO
 
 ALTER TABLE [dbo].[ts_Servers] ADD  CONSTRAINT [DF_ts_Servers_IsEnable]  DEFAULT ((1)) FOR [IsEnable]
 ALTER TABLE [dbo].[ts_Servers] ADD  CONSTRAINT [DF_ts_Servers_IsMain]  DEFAULT ((0)) FOR [IsMain]
 GO
 
+--给列添加注释
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'服务器Id' ,@level2name=N'Id',@level1name=N'ts_Servers', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'服务器名称' ,@level2name=N'ServerName',@level1name=N'ts_Servers', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'上次心跳时间' ,@level2name=N'LastHeartTime',@level1name=N'ts_Servers', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否可用' ,@level2name=N'IsEnable',@level1name=N'ts_Servers', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'服务器IP' ,@level2name=N'ServerIP',@level1name=N'ts_Servers', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否主服务器' ,@level2name=N'IsMain',@level1name=N'ts_Servers', @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE', @level2type=N'COLUMN'
 
 
  
@@ -149,9 +201,9 @@ CREATE TABLE [dbo].'+@TbName+'(
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[TaskGuid] [varchar](36) NOT NULL,
 	[ExecStatrtTime] [datetime] NOT NULL,
-	[ExecEndTime] [datetime] NOT NULL,
-	[ExecResult] [varchar](max) NOT NULL,
-	[ExecResultCode] [int] NOT NULL,
+	[ExecEndTime] [datetime] NULL,
+	[ExecResult] [varchar](max) NULL,
+	[ExecResultCode] [int] NULL,
 	[ExecUrl] [varchar](200) NOT NULL,
 	[ExecParams] [varchar](200) NULL,
  CONSTRAINT [PK_'+@TbName+'] PRIMARY KEY CLUSTERED 
