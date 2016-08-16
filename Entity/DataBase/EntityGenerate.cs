@@ -352,13 +352,13 @@ namespace TaskManager.Entity
 
 		public int ExecType
 		{ get{ return _ExecType; } 	set{ _ExecType = value ;  OnPropertyChanged("ExecType"); } }
-		private int _Interval;
+		private string _Interval;
 		/// <summary>
 		/// 时间间隔(分)
 		///  int(10)
 		/// </summary>
 
-		public int Interval
+		public string Interval
 		{ get{ return _Interval; } 	set{ _Interval = value ;  OnPropertyChanged("Interval"); } }
 		private DateTime _InsertTime;
 		/// <summary>

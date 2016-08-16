@@ -19,26 +19,15 @@ namespace TaskManager.Common.Mvc
         {
             get
             {
-                
-                string uid = HttpContext.Current.User.Identity.Name;
-                if (string.IsNullOrEmpty(uid))
-                {
-                    FormsAuthentication.SignOut();
-                }
-                return uid;
+
+                return CurrentUser.UserName;
             }
         }
         public static bool IsIsAuthenticated
         {
             get
             {
-                if (HttpContext.Current.Session["UseInfo"] == null)
-                {
-                    FormsAuthentication.SignOut();
-                    return false;
-                }
-                return HttpContext.Current.User.Identity.IsAuthenticated;
-                
+                return HttpContext.Current.User.Identity.IsAuthenticated;    
             }
         }
         /// <summary>
@@ -56,8 +45,15 @@ namespace TaskManager.Common.Mvc
                 }
                 else
                 {
-                    FormsAuthentication.SignOut();
-                    return null;
+                    string userinfo= HttpContext.Current.User.Identity.Name;
+                    if (string.IsNullOrEmpty(userinfo)) {
+                        FormsAuthentication.SignOut();
+                        return null;
+                    }
+                    
+                        IdentityUser user=Newtonsoft.Json.JsonConvert.DeserializeObject<IdentityUser>(userinfo);
+                    HttpContext.Current.Session["UseInfo"] = user;
+                    return user;
                 }
             }
             set {

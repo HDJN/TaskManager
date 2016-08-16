@@ -8,7 +8,7 @@ using TaskManager.Common.Mvc;
 using TaskManager.Entity;
 using System.Web.Security;
 using TaskManager.Common.Exceptions;
-
+using TaskManager.Common.Utils;
 namespace Web.Controllers
 {
     public class HomeController : BaseController
@@ -43,7 +43,7 @@ namespace Web.Controllers
             MyContext.CurrentUser = user;
                 msg.IsSuccess = true;
             //FormsAuthentication.SetAuthCookie(user.UserId.ToLower(), false);
-            FormsAuthentication.SetAuthCookie(user.UserName.ToLower(), false);
+            FormsAuthentication.SetAuthCookie(Newtonsoft.Json.JsonConvert.SerializeObject( user), false);
             }
             catch (BOException ex)
             {

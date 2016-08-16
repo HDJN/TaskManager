@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.Common.Corn;
 
 namespace TaskManager.Entity
 {
@@ -13,18 +14,22 @@ namespace TaskManager.Entity
         {
             get; set;
         }
-        public DateTime NextExecTime
+        public DateTime? NextExecTime
         {
             get
             {
-                return LastExecTime.AddMinutes(Interval);
+                CronExpression expression = new CronExpression(this.Interval);
+                var lastOffset = expression.GetNextValidTimeAfter(new DateTimeOffset(LastExecTime??DateTime.MinValue));
+                if (lastOffset != null)
+                    return lastOffset.Value.LocalDateTime;
+                return null;
             }
         }
         public bool IsAbnormal {
             get { return NextExecTime < DateTime.Now; }
         }
         public string CreateUserName { get; set; }
-        public DateTime LastExecTime { get; set; }
+        public DateTime? LastExecTime { get; set; }
 
         public ModelTaskList(Ts_Tasks tasks)
         {
@@ -49,7 +54,7 @@ namespace TaskManager.Entity
         {
             if (taskExec != null)
             {
-                this.LastExecTime = taskExec.LastExecTime ?? tasks.InsertTime.AddMinutes(tasks.Interval);
+                this.LastExecTime = taskExec.LastExecTime;
                 this.LastExecResultCode = taskExec.LastExecResultCode??-1000;
             }
         }
@@ -57,7 +62,7 @@ namespace TaskManager.Entity
         {
             if (taskExec != null)
             {
-                this.LastExecTime = taskExec.LastExecTime ?? tasks.InsertTime.AddMinutes(tasks.Interval);
+                this.LastExecTime = taskExec.LastExecTime;
                 this.LastExecResultCode = taskExec.LastExecResultCode ?? -1000;
             }
             this.CreateUserName = CreateUserName;

@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using TaskManager.Entity.Filter;
 using TaskManager.Common.Mvc;
 using TaskManager.Common.Exceptions;
-
+using TaskManager.Common.Corn;
 namespace TaskManager.Services
 {
     public class TaskService:BaseService
@@ -38,8 +38,11 @@ namespace TaskManager.Services
             return _ormTasks.Find(w => w.Guid == TaskGuid);
         }
         public bool SaveTask(Ts_Tasks Tasks) {
-            if (Tasks.Interval < 1) {
-               throw new BOException("执行间隔不能小于1分钟"); 
+            try
+            {
+                new CronExpression(Tasks.Interval);
+            } catch (Exception ex) {
+                throw new BOException("设置的cron表达式格式不正确");
             }
             if (Tasks.TimeOut<=0)
             {
@@ -113,7 +116,10 @@ namespace TaskManager.Services
             if (task == null)
                 throw new BOException("找不到任务ID");
             var taskinfo = new ExecTaskInfo(task, GetTaskExecByGuid(task.Guid));
-            TasksManage.GetInstance().RunTask(taskinfo);
+            var taskManager = TasksManage.GetInstance();
+            taskManager.OnTaskExecAfter += TaskManager_OnTaskExecAfter;
+            taskManager.OnTaskExecBefore += TaskManager_OnTaskExecBefore;
+            taskManager.RunTask(taskinfo);
             return true;
         }
         public Ts_TaskExec GetTaskExecByGuid(string TaskGuid) {

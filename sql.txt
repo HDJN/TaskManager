@@ -43,7 +43,7 @@ CREATE TABLE [dbo].[ts_Tasks](
 	[Title] [nvarchar](50) NOT NULL,
 	[ExecUrl] [varchar](200) NOT NULL,
 	[ExecType] [int] NOT NULL,
-	[Interval] [int] NOT NULL,
+	[Interval] [varchar](50) NOT NULL,
 	[InsertTime] [datetime] NOT NULL,
 	[Status] [int] NOT NULL,
 	[IsResponseNorm] [bit] NOT NULL,

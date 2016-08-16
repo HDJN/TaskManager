@@ -9,6 +9,7 @@ using TaskManager.Entity.Filter;
 using TaskManager.Common.Mvc;
 using TaskManager.Common.Exceptions;
 using TaskManager.Tasks;
+using TaskManager.Common.Corn;
 
 namespace TaskManager.Web.Controllers
 {
@@ -117,6 +118,33 @@ namespace TaskManager.Web.Controllers
             catch (BOException ex)
             {
                 msg.Msg = ex.Message;
+            }
+            return Json(msg);
+        }
+        [HttpPost]
+        public ActionResult QueryNextTime(string Interval)
+        {
+            JsonReturnMessages msg = new JsonReturnMessages();
+            try
+            {
+                msg.IsSuccess = true;
+                CronExpression expression = new CronExpression(Interval);
+                List<string> nextTimeList = new List<string>();
+                DateTimeOffset now = DateTimeOffset.Now;
+                for (int i = 0; i < 10; i++)
+                {
+                    var lastOffset = expression.GetNextValidTimeAfter(now);
+                    if (lastOffset != null)
+                    {
+                        now = lastOffset.Value;
+                        nextTimeList.Add(lastOffset.Value.LocalDateTime.ToString());
+                    }
+                }
+                msg.Data = nextTimeList;
+            }
+            catch (Exception ex)
+            {
+                msg.Msg = "cron表达式错误";
             }
             return Json(msg);
         }

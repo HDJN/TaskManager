@@ -124,7 +124,7 @@ namespace TaskManager.Tasks
                         //}
                         foreach (var item in tempList)
                         {
-                            if (item.NextExecTime <= DateTime.Now)
+                            if (item.NextExecTime!=null&&item.NextExecTime <= DateTime.Now)
                                 RunTask(item);
                         }
                         SetLastRunTime();

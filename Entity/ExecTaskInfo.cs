@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using TaskManager.Common.Corn;
 namespace TaskManager.Entity
 {
     public class ExecTaskInfo
@@ -11,7 +11,7 @@ namespace TaskManager.Entity
         public string ExecUrl { get; set; }
         public string Title { get; set; }
         public int ExecType { get; set; }
-        public int Interval { get; set; }
+        public string Interval { get; set; }
         public string Params { get; set; }
         public Encoding Encoding { get; set; }
         public int Timeout { get; set; }
@@ -24,11 +24,15 @@ namespace TaskManager.Entity
         public DateTime ExecEndTime { get; set; }
         public bool IsErrorAlert { get; set; }
         public string ReceiveEmail { get; set; }
-        public DateTime NextExecTime
+        public DateTime? NextExecTime
         {
             get
             {
-                return LastExecTime.AddMinutes(Interval);
+                CronExpression expression = new CronExpression(this.Interval);
+                var lastOffset = expression.GetNextValidTimeAfter(new DateTimeOffset(LastExecTime));
+                if (lastOffset != null)
+                    return lastOffset.Value.LocalDateTime;
+                return null;
             }
         }
         public DateTime LastExecTime { get; set; }
@@ -73,7 +77,7 @@ namespace TaskManager.Entity
         {
             if (taskExec != null)
             {
-                this.LastExecTime = taskExec.LastExecTime ?? tasks.InsertTime.AddMinutes(tasks.Interval);
+                this.LastExecTime = taskExec.LastExecTime ?? DateTime.MinValue;
             }
         }
       
