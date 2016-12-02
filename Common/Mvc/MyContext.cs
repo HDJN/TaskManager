@@ -27,7 +27,13 @@ namespace TaskManager.Common.Mvc
         {
             get
             {
-                return HttpContext.Current.User.Identity.IsAuthenticated;    
+                if (!HttpContext.Current.Request.IsAuthenticated)
+                {
+                    FormsAuthentication.SignOut();
+                    HttpContext.Current.Session.Clear();
+                    return false;
+                }
+                return true;
             }
         }
         /// <summary>

@@ -45,9 +45,19 @@ namespace TaskManager.Services
         {
             _logger.Error(msg);
         }
-        public void Error(string msg,Exception ex)
+        public void ErrorAndEmail(string msg,Exception ex)
         {
             _logger.Error(string.Format("{0}\r\n{1}",msg,ex.StackTrace));
+            SendEmail("系统异常，尽快检查", msg, AppConfig.SystemErrorMail);
+        }
+        public void ErrorAndEmail(string msg)
+        {
+            _logger.Error(msg);
+            SendEmail("系统异常，尽快检查", msg, AppConfig.SystemErrorMail);
+        }
+        public void Error(string msg, Exception ex)
+        {
+            _logger.Error(string.Format("{0}\r\n{1}", msg, ex.StackTrace));
         }
         public void Fatal(string msg, Exception ex)
         {

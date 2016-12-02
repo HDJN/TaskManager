@@ -18,10 +18,12 @@ namespace TaskManager.Entity
         {
             get
             {
-                CronExpression expression = new CronExpression(this.Interval);
-                var lastOffset = expression.GetNextValidTimeAfter(new DateTimeOffset(LastExecTime??DateTime.MinValue));
-                if (lastOffset != null)
-                    return lastOffset.Value.LocalDateTime;
+                try {
+                    CronExpression expression = new CronExpression(this.Interval);
+                    var lastOffset = expression.GetNextValidTimeAfter(new DateTimeOffset(LastExecTime ?? DateTime.MinValue));
+                    if (lastOffset != null)
+                        return lastOffset.Value.LocalDateTime;
+                }catch(Exception ex) { }
                 return null;
             }
         }

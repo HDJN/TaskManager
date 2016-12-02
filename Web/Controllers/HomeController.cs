@@ -43,12 +43,18 @@ namespace Web.Controllers
             MyContext.CurrentUser = user;
                 msg.IsSuccess = true;
             //FormsAuthentication.SetAuthCookie(user.UserId.ToLower(), false);
-            FormsAuthentication.SetAuthCookie(Newtonsoft.Json.JsonConvert.SerializeObject( user), false);
+            FormsAuthentication.SetAuthCookie(Newtonsoft.Json.JsonConvert.SerializeObject( user),true);
             }
             catch (BOException ex)
             {
                 msg.Data = ex.ErrorCode;
                 msg.Msg = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                msg.Data = "ERROR";
+                msg.Msg = ex.Message;
+
             }
 
             return Json(msg);

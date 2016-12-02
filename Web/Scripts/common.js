@@ -25,7 +25,8 @@ function DateFormat(val) {
     return "";
 }
 function tableDate(val) {
-
-    return DateFormat(val).Format("yyyy-MM-dd hh:mm:ss"); 
+    if(val)
+        return DateFormat(val).Format("yyyy-MM-dd hh:mm:ss");
+    return "";
 }
 

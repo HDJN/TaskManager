@@ -187,14 +187,21 @@ namespace TaskManager.Services
                     log.Error(string.Format("执行后更新记录异常,logId={0},结果:{1}",taskExecLog.ExecLogId, tsLog.ExecResult));
                 }
 
-                Ts_TaskExec taskExec = new Ts_TaskExec();
-                taskExec.LastExecResultCode = result.Code;
-
-                _ormTaskExec.Update(taskExec,w=>w.TaskGuid==taskExecLog.ExecGuid);
+                
             }
             catch (Exception ex)
             {
-                log.Error("保存执行结果异常", ex);
+                log.ErrorAndEmail(string.Format("保存执行日志结果异常TaskManager_OnTaskExecAfter,参数：{0}", taskExecLog.ToJson()), ex);
+            }
+            try
+            {
+                Ts_TaskExec taskExec = new Ts_TaskExec();
+                taskExec.LastExecResultCode = result.Code;
+                _ormTaskExec.Update(taskExec, w => w.TaskGuid == taskExecLog.ExecGuid);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorAndEmail(string.Format("保存执行日志结果异常TaskManager_OnTaskExecAfter,参数：{0}", taskExecLog.ToJson()), ex);
             }
 
             if (result.Code != 0 && taskExecLog.IsErrorAlert)
@@ -218,6 +225,15 @@ namespace TaskManager.Services
 
                  logId =(int) _ormExecLog.Add(tsLog);
 
+            }
+            catch (Exception ex)
+            {
+                log.ErrorAndEmail(string.Format("保存执行日志结果异常TaskManager_OnTaskExecBefore,参数：{0}", task.ToJson()), ex);
+
+            }
+            try
+            {
+
                 Ts_TaskExec taskExec = new Ts_TaskExec();
                 taskExec.LastExecId = logId;
                 taskExec.LastExecTime = task.LastExecTime;
@@ -225,9 +241,9 @@ namespace TaskManager.Services
 
                 _ormTaskExec.Update(taskExec);
             }
-            catch (Exception ex)
-            {
-                log.Error("保存执行结果异常", ex);
+            catch (Exception ex) {
+                log.ErrorAndEmail(string.Format("修改最后一次执行时间异常TaskManager_OnTaskExecBefore,参数：{0}", task.ToJson()), ex);
+
             }
             return logId;
 
