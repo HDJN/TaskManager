@@ -179,6 +179,8 @@ namespace TaskManager.Services
                 tsLog.ExecEndTime = taskExecLog.ExecEndTime;
                 result.Data = result.Data ?? string.Empty;
                 tsLog.ExecResult = result.ToJson();
+                if (tsLog.ExecResult.Length > 2000)
+                    tsLog.ExecResult = tsLog.ExecResult.Substring(0, 2000);
                 tsLog.ExecResultCode = result.Code;
                 tsLog.ExecStatrtTime = taskExecLog.ExecStatrtTime;
 
@@ -201,7 +203,7 @@ namespace TaskManager.Services
             }
             catch (Exception ex)
             {
-                log.ErrorAndEmail(string.Format("保存执行日志结果异常TaskManager_OnTaskExecAfter,参数：{0}", taskExecLog.ToJson()), ex);
+                log.ErrorAndEmail(string.Format("修改执行Code异常TaskManager_OnTaskExecAfter,参数：{0}", taskExecLog.ToJson()), ex);
             }
 
             if (result.Code != 0 && taskExecLog.IsErrorAlert)

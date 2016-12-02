@@ -38,7 +38,11 @@ namespace TaskManager.Web.Controllers
         [HttpPost]
         public JsonResult TaskLogs(TaskLogFilter filter,PageView pageView)
         {
-            var list = _taskService.GetAllTaskLog(filter,pageView); 
+            var list = _taskService.GetAllTaskLog(filter,pageView);
+            foreach (var item in list.DataList)
+            {
+                item.ExecResult = Server.HtmlEncode(item.ExecResult);
+            }
             return Json(list);
         }
         public ActionResult TaskEdit(string TaskGuid)
