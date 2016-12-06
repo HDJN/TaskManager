@@ -4,6 +4,7 @@ using SmiteRepository.Extansions;
 using TaskManager.Entity;
 using System;
 using TaskManager.Services;
+using System.Collections.Generic;
 
 namespace TaskManager.Services.Config
 {
@@ -32,8 +33,17 @@ namespace TaskManager.Services.Config
              {
                  DateTime start = (DateTime)SqlParams[1];
                  DateTime end = (DateTime)SqlParams[2];
-              
-                 return new string[] { string.Format("ts_ExecLog_{0}", System.DateTime.Now.ToString("yyyyMM")) };
+                 if (start >= end)
+                      new Exception("日志记录查寻参数有误");
+                 List<String> tables = new List<string>(); 
+                 while (true)
+                 {
+                     tables.Add(string.Format("ts_ExecLog_{0}", start.ToString("yyyyMM")));
+                     start = start.AddMonths(1);
+                     if (start.Year > end.Year ||start.Month> end.Month)
+                         break;
+                 }
+                 return tables.ToArray();
              });
 
             SmiteRepository.Extansions.RegisterORM.Register_CustomTableNameToUpdate<Ts_ExecLog>(w =>

@@ -28,7 +28,7 @@ namespace TaskManager.Entity
             }
         }
         public bool IsAbnormal {
-            get { return NextExecTime < DateTime.Now; }
+            get { return NextExecTime < DateTime.Now.AddMinutes(1); }
         }
         public string CreateUserName { get; set; }
         public DateTime? LastExecTime { get; set; }
